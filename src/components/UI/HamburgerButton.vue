@@ -30,9 +30,6 @@ export default {
 @import "@/assets/styles/_variables.scss";
 .menu-toggle {
   display: none;
-  position: fixed;
-  top: 2rem;
-  right: 2rem;
   width: 35px;
   height: 35px;
   border-radius: 99px;

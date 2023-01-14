@@ -1,6 +1,9 @@
 <template>
   <aside class="sidebar" :class="{ isActive: isSidebarOpen }">
-    <header class="sidebar-header">Menu</header>
+    <header class="sidebar-header">
+      <img class="logo" src="@/assets/icons/logo.svg" />
+    </header>
+    <!-- <header class="sidebar-header">Menu</header> -->
     <nav class="sidebar-nav">
       <a href="#" class="sidebar-link"> Home </a>
       <a href="#" class="sidebar-link"> Watchlist </a>
@@ -22,7 +25,6 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/styles/_variables.scss";
 .sidebar {
-  padding-top: $hight-margin;
   position: -webkit-sticky;
   position: sticky;
   top: 0;
@@ -35,11 +37,26 @@ export default {
   border-right: 2px solid $text-color-disable;
   color: $text-color-active;
 
-  .sidebar-header {
-    width: 100%;
-    display: block;
-    padding: 0.75em 1em;
-  }
+  // .sidebar-header {
+  //   width: 100%;
+  //   display: block;
+  //   padding: 0.75em 1em;
+  // }
+}
+.sidebar-header {
+  margin: 15px 8px 15px 16px;
+  height: 80px;
+  width: 80px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.logo {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  filter: invert(33%) sepia(10%) saturate(159%) hue-rotate(201deg)
+    brightness(92%) contrast(89%);
 }
 .sidebar-nav {
   position: fixed;
@@ -71,7 +88,6 @@ export default {
 }
 @media screen and (max-width: $medium) {
   .sidebar {
-    padding-top: 8rem;
     position: fixed;
     z-index: 1;
     top: 0;

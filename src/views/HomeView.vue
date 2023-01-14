@@ -20,7 +20,8 @@ export default {
 @import "@/assets/styles/_variables.scss";
 .films-block {
   height: 1000px;
-  width: 100%;
+  width: auto;
   background-color: $primary-color;
+  padding: $hight-margin;
 }
 </style>
