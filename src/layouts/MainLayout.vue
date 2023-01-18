@@ -1,8 +1,14 @@
 <template>
   <div class="positioning">
-    <the-sidebar :isSidebarOpen="isSidebarOpen" />
+    <the-sidebar
+      :isLoginInHeader="isLoginInHeader"
+      :isSidebarOpen="isSidebarOpen"
+    />
     <div class="header-main-footer">
-      <the-header @isSidebarOpen="sidebarStatus" />
+      <the-header
+        @isLoginInHeader="loginButtonStatus"
+        @isSidebarOpen="sidebarStatus"
+      />
       <main>
         <slot class="view" />
       </main>
@@ -20,11 +26,15 @@ export default {
   data() {
     return {
       isSidebarOpen: false,
+      isLoginInHeader: false,
     };
   },
   methods: {
     sidebarStatus(status) {
       this.isSidebarOpen = status;
+    },
+    loginButtonStatus(status) {
+      this.isLoginInHeader = status;
     },
   },
 };

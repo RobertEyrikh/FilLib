@@ -5,9 +5,12 @@
     </header>
     <!-- <header class="sidebar-header">Menu</header> -->
     <nav class="sidebar-nav">
-      <a href="#" class="sidebar-link"> Home </a>
-      <a href="#" class="sidebar-link"> Watchlist </a>
-      <a href="#" class="sidebar-link"> Viewed films </a>
+      <router-link to="/" class="sidebar-link"> Home </router-link>
+      <router-link to="/" class="sidebar-link"> Watchlist </router-link>
+      <router-link to="/" class="sidebar-link"> Viewed films </router-link>
+      <router-link to="/login" v-if="!isLoginInHeader" class="sidebar-link">
+        Login
+      </router-link>
     </nav>
   </aside>
 </template>
@@ -16,6 +19,9 @@
 export default {
   props: {
     isSidebarOpen: {
+      type: Boolean,
+    },
+    isLoginInHeader: {
       type: Boolean,
     },
   },

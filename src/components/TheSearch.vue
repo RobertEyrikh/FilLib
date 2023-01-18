@@ -4,7 +4,7 @@
       type="text"
       name="text"
       class="search-input"
-      placeholder="Search here!"
+      placeholder="Search film here!"
     />
     <button type="submit" name="submit" class="submit" value="Search">
       <img class="submit-image" src="@/assets/icons/search.svg" />

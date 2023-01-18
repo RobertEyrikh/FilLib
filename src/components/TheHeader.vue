@@ -2,18 +2,21 @@
   <header class="navbar">
     <the-search />
     <hamburger-button class="hamburger-button" @isSidebarOpen="sidebarStatus" />
-    <button v-if="isLoginVisible">Login</button>
+    <my-button @click="this.$router.push('/login')" v-if="isLoginInHeader"
+      >Login</my-button
+    >
   </header>
 </template>
 
 <script>
+import MyButton from "@/components/UI/MyButton.vue";
 import TheSearch from "@/components/TheSearch.vue";
 import HamburgerButton from "@/components/UI/HamburgerButton.vue";
 export default {
-  components: { TheSearch, HamburgerButton },
+  components: { TheSearch, HamburgerButton, MyButton },
   data() {
     return {
-      isLoginVisible: false,
+      isLoginInHeader: false,
     };
   },
   methods: {
@@ -22,15 +25,18 @@ export default {
     },
     onLoginVisible() {
       if (window.innerWidth > 768) {
-        this.isLoginVisible = true;
-      } else this.isLoginVisible = false;
+        this.isLoginInHeader = true;
+      } else this.isLoginInHeader = false;
+      this.$emit("isLoginInHeader", this.isLoginInHeader);
     },
   },
-  mounted() {
+  created() {
+    this.onLoginVisible();
     window.addEventListener("resize", this.onLoginVisible);
   },
 
   beforeUnmount() {
+    this.onLoginVisible();
     window.removeEventListener("resize", this.onLoginVisible);
   },
 };
