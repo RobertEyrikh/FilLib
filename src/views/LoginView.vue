@@ -12,14 +12,22 @@
       <div class="login-fields">
         <label class="email-header">Your email</label>
         <input type="text" class="email" />
+        <div class="error">
+          <label v-if="false" class="error-message">Error</label>
+        </div>
         <label class="password-header">Your password</label>
         <input type="password" class="password" />
+        <div class="error">
+          <label v-if="false" class="error-message">Error</label>
+        </div>
       </div>
       <footer class="login-footer">
         <my-button-2 class="login-button">Sign in</my-button-2>
         <div class="login-footer__link">
-          <router-link to="/" class="link">Register</router-link>
-          <router-link to="/" class="link">Forgot your password?</router-link>
+          <router-link to="/register" class="link">Register</router-link>
+          <router-link to="/password_reset" class="link"
+            >Forgot your password?</router-link
+          >
         </div>
       </footer>
     </div>
@@ -48,9 +56,10 @@ export default {
 }
 .login-header__title {
   font-size: $big-font-size;
+  margin-bottom: $little-margin;
 }
 .login-header__description {
-  font-size: $medium-font-size;
+  font-size: $small-font-size;
   strong {
     font-weight: 600;
   }
@@ -98,6 +107,13 @@ export default {
   border-radius: 5px;
   padding: 15px 18px;
   box-sizing: border-box;
+}
+.error {
+  height: 30px;
+}
+.error-message {
+  color: $error-color;
+  font-size: $xs-font-size;
 }
 .login-footer {
   margin-top: $hight-margin;

@@ -89,7 +89,7 @@ export default {
 }
 @media screen and (max-width: $large) {
   .sidebar {
-    max-width: 11em;
+    max-width: 12em;
   }
 }
 @media screen and (max-width: $medium) {
@@ -100,7 +100,7 @@ export default {
     left: -300px;
     height: 100vh;
     width: 100%;
-    max-width: 11em;
+    max-width: 12em;
     transition: 0.2s linear;
   }
   .sidebar.isActive {
