@@ -28,6 +28,7 @@ export default {};
 @import "@/assets/styles/_variables.scss";
 .footer {
   background-color: $secondary-color;
+  color: $text-color-disable;
 }
 .icon-wrapper {
   height: 40px;
@@ -35,6 +36,7 @@ export default {};
   border-radius: 20px;
   transition: all linear 0.2s;
   margin: 0 $little-margin;
+  cursor: pointer;
   &:hover {
     background-color: $text-color-disable;
   }

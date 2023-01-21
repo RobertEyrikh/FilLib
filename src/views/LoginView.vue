@@ -45,7 +45,7 @@ export default {
 @import "@/assets/styles/_variables.scss";
 .login-page {
   background-color: $primary-color;
-  height: 100vh;
+  height: 100%;
   color: $text-color-disable;
 }
 .login-form {
@@ -53,6 +53,7 @@ export default {
   margin: auto;
   padding-top: 100px;
   background-color: $primary-color;
+  padding-bottom: 150px;
 }
 .login-header__title {
   font-size: $big-font-size;

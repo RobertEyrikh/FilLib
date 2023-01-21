@@ -50,7 +50,7 @@
           </p>
           <p class="sign-in-link">
             Already a customer?
-            <router-link to="/Login" class="link">Sign in</router-link>
+            <router-link to="/login" class="link">Sign in</router-link>
           </p>
         </div>
       </footer>
