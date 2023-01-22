@@ -1,7 +1,10 @@
 <template>
   <main-layout>
     <div class="home-view">
-      <the-navbar></the-navbar>
+      <the-navbar
+        @getAwaitFilms="getAwaitFilms"
+        @getPopularFilms="getPopularFilms"
+      ></the-navbar>
       <section class="films-list">
         <ul>
           <li
@@ -32,7 +35,7 @@
                 <button class="watchlist-button">
                   <img src="@/assets/icons/star.svg" class="watchlist-image" />
                 </button>
-                <button @click="check" class="viewed-button">
+                <button class="viewed-button">
                   <img src="@/assets/icons/eye.svg" class="viewed-image" />
                 </button>
               </div>
@@ -40,61 +43,58 @@
           </li>
         </ul>
       </section>
+      <the-pagination :pagesCount="pagesCount"></the-pagination>
     </div>
   </main-layout>
 </template>
 
 <script>
+import ThePagination from "@/components/ThePagination.vue";
 import MainLayout from "@/layouts/MainLayout.vue";
 import TheNavbar from "@/components/TheNavbar.vue";
-import { getFilms } from "@/api/getFilms";
+import { getBestFilms, getPopularFilms, getAwaitFilms } from "@/api/getFilms";
 export default {
-  components: { MainLayout, TheNavbar },
+  components: { MainLayout, TheNavbar, ThePagination },
   data() {
     return {
-      films: [
-        {
-          name: "Back to the moon",
-          length: "135",
-          year: "2020",
-          country: "USA",
-          genres: "dram biography",
-          rating: "8.6",
-          ratingVoteCount: "38670",
-          posterUrlPreview:
-            "https://kinopoiskapiunofficial.tech/images/posters/kp_small/649917.jpg",
-        },
-        {
-          name: "Hellboy",
-          length: "120",
-          year: "2014",
-          country: "Britain",
-          genres: "dram biography",
-          rating: "7.5",
-          ratingVoteCount: "295940",
-          posterUrlPreview:
-            "https://kinopoiskapiunofficial.tech/images/posters/kp_small/688.jpg",
-        },
-        {
-          name: "Back to the future",
-          length: "189",
-          year: "2019",
-          country: "USA",
-          genres: "dram biography",
-          rating: "8.4",
-          ratingVoteCount: "395940",
-          posterUrlPreview:
-            "https://kinopoiskapiunofficial.tech/images/posters/kp_small/444.jpg",
-        },
-      ],
+      films: [],
+      pagesCount: 0,
     };
   },
   created() {
-    getFilms();
+    getBestFilms((filmsData) => {
+      this.addFilms(filmsData);
+    });
   },
   methods: {
-    check() {
-      console.log(getFilms());
+    addFilms(filmsData) {
+      let films = filmsData.films;
+      this.pagesCount = filmsData.pagesCount;
+      films.forEach((filmData) => {
+        let film = {
+          name: filmData.nameEn ?? filmData.nameRu,
+          length: filmData.filmLength,
+          year: filmData.year,
+          country: filmData.countries[0].country,
+          genres: filmData.genres[0].genre,
+          rating: filmData.rating,
+          ratingVoteCount: filmData.ratingVoteCount,
+          posterUrlPreview: filmData.posterUrlPreview,
+        };
+        this.films.push(film);
+      });
+    },
+    getPopularFilms() {
+      this.films = [];
+      getPopularFilms((filmsData) => {
+        this.addFilms(filmsData);
+      });
+    },
+    getAwaitFilms() {
+      this.films = [];
+      getAwaitFilms((filmsData) => {
+        this.addFilms(filmsData);
+      });
     },
   },
 };
@@ -118,21 +118,31 @@ export default {
   justify-content: space-between;
   background-color: $tertiary-color;
   border-radius: 10px;
+  height: 130px;
   padding: $little-margin;
   margin-bottom: $medium-margin;
+  cursor: pointer;
+  transition: all 0.2s;
+  &:hover {
+    background-color: $secondary-color;
+  }
 }
 .film-left-side,
 .film-right-side {
   display: flex;
 }
+.film-left-side {
+  max-width: 70%;
+}
 .number {
   font-size: $big-font-size;
   font-weight: 400;
   color: $text-color-active;
+  width: 50px;
 }
 .image-wrapper {
   height: 108px;
-  width: 72px;
+  min-width: 72px;
   margin: 0 $medium-margin 0 $hight-margin;
 }
 .film-image {
@@ -144,14 +154,16 @@ export default {
   min-width: 250px;
 }
 .film-description__title {
-  font-size: $medium-font-size;
+  font-size: $small-font-size;
   color: $text-color-active;
+  margin-bottom: $little-margin;
 }
 .film-description__release {
   margin-bottom: $little-margin;
 }
 .grade {
   min-width: 60px;
+  margin-left: $little-margin;
 }
 .grade__number {
   font-size: $big-font-size;
@@ -190,9 +202,10 @@ export default {
   }
   .number {
     font-size: $small-font-size;
+    width: 30px;
   }
   .film-description__title {
-    font-size: $small-font-size;
+    font-size: $xs-font-size;
   }
   .film-description {
     min-width: 200px;

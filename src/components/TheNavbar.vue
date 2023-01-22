@@ -5,10 +5,12 @@
         <p class="category__name">Best</p>
       </div>
       <div class="category">
-        <p class="category__name">Popular</p>
+        <p @click="this.$emit('getPopularFilms')" class="category__name">
+          Popular
+        </p>
       </div>
       <div class="category">
-        <p class="category__name">Await</p>
+        <p @click="this.$emit('getAwaitFilms')" class="category__name">Await</p>
       </div>
     </div>
     <div class="dropdown">
