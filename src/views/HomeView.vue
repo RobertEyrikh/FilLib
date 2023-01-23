@@ -13,7 +13,7 @@
             class="film-container"
           >
             <div class="film-left-side">
-              <p class="number">{{ index + 1 }}</p>
+              <p class="number">{{ (page - 1) * 20 + index + 1 }}</p>
               <div class="image-wrapper">
                 <img :src="film.posterUrlPreview" class="film-image" />
               </div>
@@ -43,7 +43,12 @@
           </li>
         </ul>
       </section>
-      <the-pagination :pagesCount="pagesCount"></the-pagination>
+      <the-pagination
+        v-if="pagesCount > 1"
+        @page-changed="changePage"
+        :pagesCount="pagesCount"
+        class="the-pagination"
+      ></the-pagination>
     </div>
   </main-layout>
 </template>
@@ -59,14 +64,23 @@ export default {
     return {
       films: [],
       pagesCount: 0,
+      page: 1,
+      category: "best",
     };
   },
   created() {
-    getBestFilms((filmsData) => {
+    getBestFilms(1, (filmsData) => {
       this.addFilms(filmsData);
     });
   },
   methods: {
+    changePage(page) {
+      this.page = page;
+      this.films = [];
+      getBestFilms(page, (filmsData) => {
+        this.addFilms(filmsData);
+      });
+    },
     addFilms(filmsData) {
       let films = filmsData.films;
       this.pagesCount = filmsData.pagesCount;
@@ -97,6 +111,22 @@ export default {
       });
     },
   },
+  // computed: {
+  //   pageStateOptions() {
+  //     return {
+  //       category: this.category,
+  //     };
+  //   },
+  // },
+  // watch: {
+  //   pageStateOptions(value) {
+  //     window.history.pushState(
+  //       null,
+  //       document.title,
+  //       `${window.location.pathname}&category=${value.category}`
+  //     );
+  //   },
+  // },
 };
 </script>
 

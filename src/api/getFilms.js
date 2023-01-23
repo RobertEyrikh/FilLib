@@ -1,7 +1,7 @@
 const API_KEY = "8b496016-7bd2-4c9b-8893-617e3cd3d1ae";
-export const getBestFilms = (cb) => {
+export const getBestFilms = (page, cb) => {
   fetch(
-    "https://kinopoiskapiunofficial.tech/api/v2.2/films/top?type=TOP_250_BEST_FILMS&page=1",
+    `https://kinopoiskapiunofficial.tech/api/v2.2/films/top?type=TOP_250_BEST_FILMS&page=${page}`,
     {
       method: "GET",
       headers: {
