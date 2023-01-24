@@ -7,7 +7,7 @@
       <router-link
         v-for="i in pages"
         :key="i"
-        @click="(this.currentPage = i), this.pageChange(i)"
+        @click="this.pageChange(i)"
         class="page-link"
         :class="{ active: currentPage === i }"
         to="/"
@@ -24,7 +24,6 @@
 export default {
   data() {
     return {
-      currentPage: 1,
       pageRange: 3,
     };
   },
@@ -40,14 +39,14 @@ export default {
     },
     nextPage() {
       if (this.currentPage < this.pagesCount) {
-        this.currentPage += 1;
+        this.$emit("page-changed", this.currentPage + 1);
       } else {
         return;
       }
     },
     prevPage() {
       if (this.currentPage > 1) {
-        this.currentPage -= 1;
+        this.$emit("page-changed", this.currentPage - 1);
       } else {
         return;
       }
@@ -80,6 +79,10 @@ export default {
   },
   props: {
     pagesCount: {
+      required: true,
+      type: Number,
+    },
+    currentPage: {
       required: true,
       type: Number,
     },

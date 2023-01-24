@@ -2,12 +2,13 @@
   <main-layout>
     <div class="home-view">
       <the-navbar
-        @getAwaitFilms="getAwaitFilms"
-        @getPopularFilms="getPopularFilms"
+        :category="category"
+        @changeCategory="changeCategory"
       ></the-navbar>
       <section class="films-list">
         <ul>
-          <li
+          <router-link
+            :to="`/film/${film.id}`"
             v-for="(film, index) in films"
             :key="film.name"
             class="film-container"
@@ -40,13 +41,14 @@
                 </button>
               </div>
             </div>
-          </li>
+          </router-link>
         </ul>
       </section>
       <the-pagination
         v-if="pagesCount > 1"
         @page-changed="changePage"
         :pagesCount="pagesCount"
+        :currentPage="page"
         class="the-pagination"
       ></the-pagination>
     </div>
@@ -57,7 +59,7 @@
 import ThePagination from "@/components/ThePagination.vue";
 import MainLayout from "@/layouts/MainLayout.vue";
 import TheNavbar from "@/components/TheNavbar.vue";
-import { getBestFilms, getPopularFilms, getAwaitFilms } from "@/api/getFilms";
+import { getFilmsFromApi } from "@/api/getFilms";
 export default {
   components: { MainLayout, TheNavbar, ThePagination },
   data() {
@@ -69,17 +71,33 @@ export default {
     };
   },
   created() {
-    getBestFilms(1, (filmsData) => {
-      this.addFilms(filmsData);
-    });
+    let windowData = Object.fromEntries(
+      new URL(window.location.href).searchParams.entries()
+    );
+    if (windowData.category) {
+      this.category = windowData.category;
+    }
+    if (windowData.page) {
+      this.page = +windowData.page;
+    }
+    this.getFilms();
   },
   methods: {
+    getFilms() {
+      getFilmsFromApi(this.category, this.page, (filmsData) => {
+        this.addFilms(filmsData);
+      });
+    },
+    changeCategory(category) {
+      this.page = 1;
+      this.category = category;
+      this.films = [];
+      this.getFilms();
+    },
     changePage(page) {
       this.page = page;
       this.films = [];
-      getBestFilms(page, (filmsData) => {
-        this.addFilms(filmsData);
-      });
+      this.getFilms();
     },
     addFilms(filmsData) {
       let films = filmsData.films;
@@ -94,39 +112,29 @@ export default {
           rating: filmData.rating,
           ratingVoteCount: filmData.ratingVoteCount,
           posterUrlPreview: filmData.posterUrlPreview,
+          id: filmData.filmId,
         };
         this.films.push(film);
       });
     },
-    getPopularFilms() {
-      this.films = [];
-      getPopularFilms((filmsData) => {
-        this.addFilms(filmsData);
-      });
-    },
-    getAwaitFilms() {
-      this.films = [];
-      getAwaitFilms((filmsData) => {
-        this.addFilms(filmsData);
-      });
+  },
+  computed: {
+    pageStateOptions() {
+      return {
+        category: this.category,
+        page: this.page,
+      };
     },
   },
-  // computed: {
-  //   pageStateOptions() {
-  //     return {
-  //       category: this.category,
-  //     };
-  //   },
-  // },
-  // watch: {
-  //   pageStateOptions(value) {
-  //     window.history.pushState(
-  //       null,
-  //       document.title,
-  //       `${window.location.pathname}&category=${value.category}`
-  //     );
-  //   },
-  // },
+  watch: {
+    pageStateOptions(value) {
+      window.history.replaceState(
+        null,
+        document.title,
+        `${window.location.pathname}?category=${value.category}&page=${value.page}`
+      );
+    },
+  },
 };
 </script>
 
@@ -135,7 +143,6 @@ export default {
 .home-view {
   overflow-x: hidden;
   min-height: 1000px;
-  width: auto;
   background-color: $primary-color;
   padding: $hight-margin;
   color: $text-color-disable;
@@ -144,6 +151,8 @@ export default {
   margin-top: $extra-hight-margin;
 }
 .film-container {
+  text-decoration: none;
+  color: inherit;
   display: flex;
   justify-content: space-between;
   background-color: $tertiary-color;
@@ -168,12 +177,12 @@ export default {
   font-size: $big-font-size;
   font-weight: 400;
   color: $text-color-active;
-  width: 50px;
+  width: 35px;
 }
 .image-wrapper {
   height: 108px;
-  min-width: 72px;
-  margin: 0 $medium-margin 0 $hight-margin;
+  width: 72px;
+  margin: 0 $medium-margin;
 }
 .film-image {
   object-fit: cover;
@@ -182,6 +191,7 @@ export default {
 }
 .film-description {
   min-width: 250px;
+  max-width: 60%;
 }
 .film-description__title {
   font-size: $small-font-size;
@@ -202,13 +212,36 @@ export default {
 .buttons-container {
   margin-left: $little-margin;
 }
+@media screen and (max-width: $small) {
+  .image-wrapper {
+    margin: 0 $little-margin 0 $little-margin;
+  }
+  .number {
+    font-size: $small-font-size;
+    width: 30px;
+  }
+  .film-description__title {
+    font-size: $xs-font-size;
+  }
+  .film-description {
+    font-size: $xs-font-size;
+    min-width: 200px;
+  }
+  .watchlist-button,
+  .viewed-button {
+    height: 30px;
+    width: 30px;
+  }
+}
+</style>
+<style lang="scss">
 .watchlist-button,
 .viewed-button {
   background-color: inherit;
   height: 40px;
   width: 40px;
   border-radius: 100%;
-  margin-left: $little-margin;
+  margin-right: 10px;
   transition: all 0.2s;
   cursor: pointer;
   &:hover {
@@ -225,25 +258,5 @@ export default {
   scale: 0.8;
   filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(162deg)
     brightness(104%) contrast(104%);
-}
-@media screen and (max-width: $small) {
-  .image-wrapper {
-    margin: 0 $little-margin 0 $little-margin;
-  }
-  .number {
-    font-size: $small-font-size;
-    width: 30px;
-  }
-  .film-description__title {
-    font-size: $xs-font-size;
-  }
-  .film-description {
-    min-width: 200px;
-  }
-  .watchlist-button,
-  .viewed-button {
-    height: 30px;
-    width: 30px;
-  }
 }
 </style>

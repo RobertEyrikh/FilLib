@@ -1,0 +1,228 @@
+<template>
+  <main-layout>
+    <div class="film-container">
+      <section class="film-banner">
+        <div class="film-specification">
+          <h1 class="film-specification__title">
+            {{ film.nameOriginal }}
+          </h1>
+          <p class="film-specification__info">
+            {{ film.year }} {{ film.genres }} {{ film.filmLength }}
+            {{ film.ratingAgeLimits }}
+          </p>
+          <p class="film-specification__slogan">{{ film.slogan }}</p>
+          <div class="button_container">
+            <button class="watchlist-button">
+              <img src="@/assets/icons/star.svg" class="watchlist-image" />
+            </button>
+            <button class="viewed-button">
+              <img src="@/assets/icons/eye.svg" class="viewed-image" />
+            </button>
+          </div>
+        </div>
+        <div class="cover-wrapper">
+          <img class="cover" :src="`${film.coverUrl}`" />
+        </div>
+      </section>
+      <section class="film-description">
+        <div class="film-description__text">
+          {{ film.description }}
+        </div>
+        <div class="film-description__rating">
+          <div class="imdb-rating">
+            <p class="imdb-rating__title">IMDB</p>
+            <p class="imdb-rating__number">{{ film.ratingImdb }}</p>
+            <p class="imdb-rating__quantity">{{ film.ratingImdbVoteCount }}</p>
+          </div>
+          <div class="kp-rating">
+            <p class="kp-rating__title">Kinopoisk</p>
+            <p class="kp-rating__number">{{ film.ratingKinopoisk }}</p>
+            <p class="kp-rating__quantity">
+              {{ film.ratingKinopoiskVoteCount }}
+            </p>
+          </div>
+        </div>
+      </section>
+      <section class="information">
+        <h1 class="information-title">Information</h1>
+        <div class="information-block">
+          <p class="information-block__title">Country</p>
+          <p class="information-block__description">{{ film.countries }}</p>
+        </div>
+        <div class="information-block">
+          <p class="information-block__title">Genres</p>
+          <p class="information-block__description">{{ film.genres }}</p>
+        </div>
+        <div class="information-block">
+          <p class="information-block__title">Original name</p>
+          <p class="information-block__description">{{ film.nameOriginal }}</p>
+        </div>
+        <div class="information-block">
+          <p class="information-block__title">Rating</p>
+          <p class="information-block__description">
+            {{ film.ratingAgeLimits }}
+          </p>
+        </div>
+        <div class="information-block">
+          <p class="information-block__title">Rating MPAA</p>
+          <p class="information-block__description">{{ film.ratingMpaa }}</p>
+        </div>
+        <div class="information-block">
+          <p class="information-block__title">Year</p>
+          <p class="information-block__description">{{ film.year }}</p>
+        </div>
+      </section>
+    </div>
+  </main-layout>
+</template>
+
+<script>
+import MainLayout from "@/layouts/MainLayout.vue";
+import { getCurrentFilmFromApi } from "@/api/getFilms";
+export default {
+  components: { MainLayout },
+  data() {
+    return {
+      film: {},
+      id: this.$route.params["id"],
+    };
+  },
+  created() {
+    this.getFilms();
+  },
+  methods: {
+    getFilms() {
+      getCurrentFilmFromApi(this.id, (filmData) => {
+        this.addFilm(filmData);
+      });
+    },
+    addFilm(filmData) {
+      let film = filmData;
+      let genres = "";
+      let countries = "";
+      film.genres.forEach((element) => {
+        genres = genres + element.genre + " ";
+      });
+      film.countries.forEach((element) => {
+        countries = countries + element.country + " ";
+      });
+      film.genres = genres;
+      film.countries = countries;
+      this.film = film;
+      console.log(this.film);
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+@import "@/assets/styles/_variables.scss";
+.film-container {
+  overflow-x: hidden;
+  background-color: $primary-color;
+  color: $text-color-disable;
+}
+.film-banner {
+  display: flex;
+  background-color: $secondary-color;
+}
+.film-specification {
+  padding: $hight-margin;
+  width: 30%;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+.film-specification__title {
+  font-size: $medium-font-size;
+  color: $active-color;
+  margin-bottom: $medium-margin;
+}
+.film-specification__slogan {
+  margin-bottom: $little-margin;
+}
+.cover-wrapper {
+  position: relative;
+  //width: 70%;
+  max-height: 500px;
+}
+.cover-wrapper:after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: transparent;
+  background-image: radial-gradient(
+    at 80% 30%,
+    transparent,
+    $secondary-color 70%
+  );
+}
+.cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.film-description,
+.information {
+  padding: $hight-margin;
+}
+.film-description {
+  display: flex;
+  justify-content: space-between;
+}
+.film-description__text {
+  width: 80%;
+}
+.imdb-rating {
+  margin-bottom: $medium-margin;
+}
+.imdb-rating__title,
+.kp-rating__title {
+  color: $text-color-active;
+  font-weight: 600;
+}
+.imdb-rating__number,
+.kp-rating__number {
+  color: $active-color;
+  font-size: $small-font-size;
+}
+.information-title {
+  color: $text-color-active;
+  font-size: $medium-font-size;
+  padding-bottom: $medium-margin;
+  font-weight: 600;
+}
+.information-block {
+  padding-bottom: $little-margin;
+}
+.information-block__description {
+  color: $text-color-active;
+}
+@media screen and (max-width: $medium) {
+  .film-banner {
+    flex-flow: wrap;
+  }
+  .film-specification {
+    order: 2;
+  }
+  .cover-wrapper {
+    order: 1;
+    width: 100%;
+    height: 400px;
+  }
+  .film-specification {
+    width: 100%;
+  }
+}
+@media screen and (max-width: $small) {
+  .cover-wrapper {
+    height: 200px;
+  }
+  .film-description__text {
+    width: 70%;
+  }
+}
+</style>

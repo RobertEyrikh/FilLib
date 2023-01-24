@@ -24,7 +24,7 @@ export default {
       this.$emit("isSidebarOpen", status);
     },
     onLoginVisible() {
-      if (window.innerWidth > 768) {
+      if (window.innerWidth > 850) {
         this.isLoginInHeader = true;
       } else this.isLoginInHeader = false;
       this.$emit("isLoginInHeader", this.isLoginInHeader);

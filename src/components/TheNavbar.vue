@@ -1,16 +1,26 @@
 <template>
   <nav class="navbar">
     <div class="category-block">
-      <div class="category active">
-        <p class="category__name">Best</p>
+      <div class="category" :class="{ active: this.category === 'best' }">
+        <p @click="this.$emit('changeCategory', 'best')" class="category__name">
+          Best
+        </p>
       </div>
-      <div class="category">
-        <p @click="this.$emit('getPopularFilms')" class="category__name">
+      <div class="category" :class="{ active: this.category === 'popular' }">
+        <p
+          @click="this.$emit('changeCategory', 'popular')"
+          class="category__name"
+        >
           Popular
         </p>
       </div>
-      <div class="category">
-        <p @click="this.$emit('getAwaitFilms')" class="category__name">Await</p>
+      <div class="category" :class="{ active: this.category === 'await' }">
+        <p
+          @click="this.$emit('changeCategory', 'await')"
+          class="category__name"
+        >
+          Await
+        </p>
       </div>
     </div>
     <div class="dropdown">
@@ -25,7 +35,13 @@
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    category: {
+      type: String,
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>

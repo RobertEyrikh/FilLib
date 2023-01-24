@@ -34,9 +34,8 @@ export default {
   position: -webkit-sticky;
   position: sticky;
   top: 0;
-  width: 17em;
+  min-width: 14em;
   height: 100vh;
-  top: 0;
   overflow: hidden;
   background-color: $primary-color;
   visibility: visible;
@@ -89,7 +88,7 @@ export default {
 }
 @media screen and (max-width: $large) {
   .sidebar {
-    max-width: 12em;
+    min-width: 12em;
   }
 }
 @media screen and (max-width: $medium) {
