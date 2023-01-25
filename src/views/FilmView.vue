@@ -1,86 +1,87 @@
 <template>
-  <main-layout>
-    <div class="film-container">
-      <section class="film-banner">
-        <div class="film-specification">
-          <h1 class="film-specification__title">
-            {{ film.nameOriginal }}
-          </h1>
-          <p class="film-specification__info">
-            {{ film.year }} {{ film.genres }} {{ film.filmLength }}
-            {{ film.ratingAgeLimits }}
-          </p>
-          <p class="film-specification__slogan">{{ film.slogan }}</p>
-          <div class="button_container">
-            <button class="watchlist-button">
-              <img src="@/assets/icons/star.svg" class="watchlist-image" />
-            </button>
-            <button class="viewed-button">
-              <img src="@/assets/icons/eye.svg" class="viewed-image" />
-            </button>
-          </div>
+  <div class="film-container">
+    <section class="film-banner">
+      <div class="film-specification">
+        <h1 class="film-specification__title">
+          {{ film.nameOriginal ?? film.nameRu }}
+        </h1>
+        <p class="film-specification__info">
+          {{ film.year }} {{ film.genres }} {{ film.filmLength }} min
+          {{ film.ratingAgeLimits }}
+        </p>
+        <p class="film-specification__slogan">{{ film.slogan }}</p>
+        <div class="button_container">
+          <button class="watchlist-button">
+            <img src="@/assets/icons/star.svg" class="watchlist-image" />
+          </button>
+          <button class="viewed-button">
+            <img src="@/assets/icons/eye.svg" class="viewed-image" />
+          </button>
         </div>
-        <div class="cover-wrapper">
-          <img class="cover" :src="`${film.coverUrl}`" />
+      </div>
+      <div class="cover-wrapper">
+        <img class="cover" :src="`${film.coverUrl ?? film.posterUrl}`" />
+      </div>
+    </section>
+    <section class="film-description">
+      <div class="film-description__text">
+        <h1 class="information-title">Description</h1>
+        {{ film.description }}
+      </div>
+      <div class="film-description__rating">
+        <div class="imdb-rating">
+          <p class="imdb-rating__title">IMDB</p>
+          <p class="imdb-rating__number">{{ film.ratingImdb }}</p>
+          <p class="imdb-rating__quantity">{{ film.ratingImdbVoteCount }}</p>
         </div>
-      </section>
-      <section class="film-description">
-        <div class="film-description__text">
-          {{ film.description }}
-        </div>
-        <div class="film-description__rating">
-          <div class="imdb-rating">
-            <p class="imdb-rating__title">IMDB</p>
-            <p class="imdb-rating__number">{{ film.ratingImdb }}</p>
-            <p class="imdb-rating__quantity">{{ film.ratingImdbVoteCount }}</p>
-          </div>
-          <div class="kp-rating">
-            <p class="kp-rating__title">Kinopoisk</p>
-            <p class="kp-rating__number">{{ film.ratingKinopoisk }}</p>
-            <p class="kp-rating__quantity">
-              {{ film.ratingKinopoiskVoteCount }}
-            </p>
-          </div>
-        </div>
-      </section>
-      <section class="information">
-        <h1 class="information-title">Information</h1>
-        <div class="information-block">
-          <p class="information-block__title">Country</p>
-          <p class="information-block__description">{{ film.countries }}</p>
-        </div>
-        <div class="information-block">
-          <p class="information-block__title">Genres</p>
-          <p class="information-block__description">{{ film.genres }}</p>
-        </div>
-        <div class="information-block">
-          <p class="information-block__title">Original name</p>
-          <p class="information-block__description">{{ film.nameOriginal }}</p>
-        </div>
-        <div class="information-block">
-          <p class="information-block__title">Rating</p>
-          <p class="information-block__description">
-            {{ film.ratingAgeLimits }}
+        <div class="kp-rating">
+          <p class="kp-rating__title">Kinopoisk</p>
+          <p class="kp-rating__number">{{ film.ratingKinopoisk }}</p>
+          <p class="kp-rating__quantity">
+            {{ film.ratingKinopoiskVoteCount }}
           </p>
         </div>
-        <div class="information-block">
-          <p class="information-block__title">Rating MPAA</p>
-          <p class="information-block__description">{{ film.ratingMpaa }}</p>
-        </div>
-        <div class="information-block">
-          <p class="information-block__title">Year</p>
-          <p class="information-block__description">{{ film.year }}</p>
-        </div>
-      </section>
-    </div>
-  </main-layout>
+      </div>
+    </section>
+    <section class="information">
+      <h1 class="information-title">Information</h1>
+      <div class="information-block">
+        <p class="information-block__title">Country</p>
+        <p class="information-block__description">{{ film.countries }}</p>
+      </div>
+      <div class="information-block">
+        <p class="information-block__title">Genres</p>
+        <p class="information-block__description">{{ film.genres }}</p>
+      </div>
+      <div class="information-block">
+        <p class="information-block__title">Original name</p>
+        <p class="information-block__description">
+          {{ film.nameOriginal ?? film.nameRu }}
+        </p>
+      </div>
+      <div class="information-block">
+        <p class="information-block__title">Rating</p>
+        <p class="information-block__description">
+          {{ film.ratingAgeLimits }}
+        </p>
+      </div>
+      <div class="information-block">
+        <p class="information-block__title">Rating MPAA</p>
+        <p class="information-block__description">
+          {{ film.ratingMpaa ?? "-" }}
+        </p>
+      </div>
+      <div class="information-block">
+        <p class="information-block__title">Year</p>
+        <p class="information-block__description">{{ film.year }}</p>
+      </div>
+    </section>
+  </div>
 </template>
 
 <script>
-import MainLayout from "@/layouts/MainLayout.vue";
 import { getCurrentFilmFromApi } from "@/api/getFilms";
 export default {
-  components: { MainLayout },
   data() {
     return {
       film: {},
@@ -109,7 +110,6 @@ export default {
       film.genres = genres;
       film.countries = countries;
       this.film = film;
-      console.log(this.film);
     },
   },
 };
@@ -128,7 +128,7 @@ export default {
 }
 .film-specification {
   padding: $hight-margin;
-  width: 30%;
+  // width: 50%;
   margin-top: auto;
   margin-bottom: auto;
 }
@@ -137,8 +137,12 @@ export default {
   color: $active-color;
   margin-bottom: $medium-margin;
 }
+.film-specification__info {
+  width: 200%;
+}
 .film-specification__slogan {
-  margin-bottom: $little-margin;
+  margin: $little-margin 0;
+  color: $text-color-active;
 }
 .cover-wrapper {
   position: relative;
@@ -196,12 +200,15 @@ export default {
   font-weight: 600;
 }
 .information-block {
-  padding-bottom: $little-margin;
+  padding-bottom: $medium-margin;
+}
+.information-block__title {
+  padding-bottom: $xs-margin;
 }
 .information-block__description {
   color: $text-color-active;
 }
-@media screen and (max-width: $medium) {
+@media screen and (max-width: $large) {
   .film-banner {
     flex-flow: wrap;
   }

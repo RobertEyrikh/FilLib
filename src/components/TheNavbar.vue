@@ -23,7 +23,7 @@
         </p>
       </div>
     </div>
-    <div class="dropdown">
+    <div v-if="false" class="dropdown">
       <button class="dropbtn">By rating</button>
       <div class="dropdown-content">
         <a href="#">By release date</a>

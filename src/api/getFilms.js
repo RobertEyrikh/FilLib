@@ -32,3 +32,18 @@ export const getCurrentFilmFromApi = (id, cb) => {
     .then((json) => cb(json))
     .catch((err) => console.log(err));
 };
+export const getFilmsByKeyword = (keyword, page, cb) => {
+  fetch(
+    `https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword?keyword=${keyword}&page=${page}`,
+    {
+      method: "GET",
+      headers: {
+        "X-API-KEY": API_KEY,
+        "Content-Type": "application/json",
+      },
+    }
+  )
+    .then((res) => res.json())
+    .then((json) => cb(json))
+    .catch((err) => console.log(err));
+};

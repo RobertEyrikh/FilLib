@@ -1,19 +1,38 @@
 <template>
   <form class="search">
     <input
+      v-model.trim="queryString"
       type="text"
       name="text"
       class="search-input"
       placeholder="Search film here!"
     />
-    <button type="submit" name="submit" class="submit" value="Search">
+    <button
+      @click.prevent.enter="getSearchedFilms"
+      type="submit"
+      name="submit"
+      class="submit"
+      value="Search"
+    >
       <img class="submit-image" src="@/assets/icons/search.svg" />
     </button>
   </form>
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      queryString: "",
+      films: [],
+    };
+  },
+  methods: {
+    getSearchedFilms() {
+      this.$emit("query-string", this.queryString);
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>

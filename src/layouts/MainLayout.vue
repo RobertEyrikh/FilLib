@@ -8,9 +8,10 @@
       <the-header
         @isLoginInHeader="loginButtonStatus"
         @isSidebarOpen="sidebarStatus"
+        @query-string="transferQueryString"
       />
       <main>
-        <slot class="view" />
+        <router-view :queryString="queryString" class="view" />
       </main>
       <the-footer />
     </div>
@@ -27,6 +28,12 @@ export default {
     return {
       isSidebarOpen: false,
       isLoginInHeader: false,
+      queryString: "",
+    };
+  },
+  provide() {
+    return {
+      queryString: this.queryString,
     };
   },
   methods: {
@@ -35,6 +42,10 @@ export default {
     },
     loginButtonStatus(status) {
       this.isLoginInHeader = status;
+    },
+    transferQueryString(query) {
+      this.queryString = query;
+      console.log(this.queryString);
     },
   },
 };

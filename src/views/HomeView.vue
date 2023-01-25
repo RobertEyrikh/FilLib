@@ -1,74 +1,79 @@
 <template>
-  <main-layout>
-    <div class="home-view">
-      <the-navbar
-        :category="category"
-        @changeCategory="changeCategory"
-      ></the-navbar>
-      <section class="films-list">
-        <ul>
-          <router-link
-            :to="`/film/${film.id}`"
-            v-for="(film, index) in films"
-            :key="film.name"
-            class="film-container"
-          >
-            <div class="film-left-side">
-              <p class="number">{{ (page - 1) * 20 + index + 1 }}</p>
-              <div class="image-wrapper">
-                <img :src="film.posterUrlPreview" class="film-image" />
-              </div>
-              <div class="film-description">
-                <h1 class="film-description__title">{{ film.name }}</h1>
-                <p class="film-description__release">
-                  {{ film.year }}, {{ film.length }} min
-                </p>
-                <p class="film-description__country">{{ film.country }}</p>
-                <p class="film-description__categories">{{ film.genres }}</p>
-              </div>
+  <div class="home-view">
+    <the-navbar
+      :category="category"
+      @changeCategory="changeCategory"
+    ></the-navbar>
+    <button @click="getSearchedFilms">check</button>
+    <section class="films-list">
+      <ul>
+        <router-link
+          :to="`/film/${film.id}`"
+          v-for="(film, index) in films"
+          :key="film.name"
+          class="film-container"
+        >
+          <div class="film-left-side">
+            <p class="number">{{ (page - 1) * 20 + index + 1 }}</p>
+            <div class="image-wrapper">
+              <img :src="film.posterUrlPreview" class="film-image" />
             </div>
-            <div class="film-right-side">
-              <div class="grade">
-                <p class="grade__number">{{ film.rating }}</p>
-                <p class="grade__quantity">{{ film.ratingVoteCount }}</p>
-              </div>
-              <div class="buttons-container">
-                <button class="watchlist-button">
-                  <img src="@/assets/icons/star.svg" class="watchlist-image" />
-                </button>
-                <button class="viewed-button">
-                  <img src="@/assets/icons/eye.svg" class="viewed-image" />
-                </button>
-              </div>
+            <div class="film-description">
+              <h1 class="film-description__title">{{ film.name }}</h1>
+              <p class="film-description__release">
+                {{ film.year }}, {{ film.length }} min
+              </p>
+              <p class="film-description__country">{{ film.country ?? "-" }}</p>
+              <p class="film-description__categories">{{ film.genres }}</p>
             </div>
-          </router-link>
-        </ul>
-      </section>
-      <the-pagination
-        v-if="pagesCount > 1"
-        @page-changed="changePage"
-        :pagesCount="pagesCount"
-        :currentPage="page"
-        class="the-pagination"
-      ></the-pagination>
-    </div>
-  </main-layout>
+          </div>
+          <div class="film-right-side">
+            <div class="grade">
+              <p class="grade__number">{{ film.rating }}</p>
+              <p class="grade__quantity">{{ film.ratingVoteCount }}</p>
+            </div>
+            <div class="buttons-container">
+              <button class="watchlist-button">
+                <img src="@/assets/icons/star.svg" class="watchlist-image" />
+              </button>
+              <button class="viewed-button">
+                <img src="@/assets/icons/eye.svg" class="viewed-image" />
+              </button>
+            </div>
+          </div>
+        </router-link>
+      </ul>
+    </section>
+    <the-pagination
+      v-if="pagesCount > 1"
+      @page-changed="changePage"
+      :pagesCount="pagesCount"
+      :currentPage="page"
+      class="the-pagination"
+    ></the-pagination>
+  </div>
 </template>
 
 <script>
 import ThePagination from "@/components/ThePagination.vue";
-import MainLayout from "@/layouts/MainLayout.vue";
+//import MainLayout from "@/layouts/MainLayout.vue";
 import TheNavbar from "@/components/TheNavbar.vue";
-import { getFilmsFromApi } from "@/api/getFilms";
+import { getFilmsFromApi, getFilmsByKeyword } from "@/api/getFilms";
 export default {
-  components: { MainLayout, TheNavbar, ThePagination },
+  components: { TheNavbar, ThePagination },
   data() {
     return {
       films: [],
       pagesCount: 0,
       page: 1,
       category: "best",
+      searchQuery: "",
     };
+  },
+  props: {
+    queryString: {
+      type: String,
+    },
   },
   created() {
     let windowData = Object.fromEntries(
@@ -80,11 +85,26 @@ export default {
     if (windowData.page) {
       this.page = +windowData.page;
     }
-    this.getFilms();
+    console.log(windowData.search);
+    if (windowData.search) {
+      this.searchQuery = windowData.search;
+      this.getSearchedFilms();
+      console.log(this.searchQuery);
+    } else {
+      this.getFilms();
+    }
   },
   methods: {
     getFilms() {
       getFilmsFromApi(this.category, this.page, (filmsData) => {
+        this.addFilms(filmsData);
+      });
+    },
+    getSearchedFilms() {
+      this.searchQuery = this.queryString;
+      this.films = [];
+      this.category = "";
+      getFilmsByKeyword(this.queryString, this.page, (filmsData) => {
         this.addFilms(filmsData);
       });
     },
@@ -97,7 +117,11 @@ export default {
     changePage(page) {
       this.page = page;
       this.films = [];
-      this.getFilms();
+      if (this.queryString.length != 0) {
+        this.getSearchedFilms();
+      } else {
+        this.getFilms();
+      }
     },
     addFilms(filmsData) {
       let films = filmsData.films;
@@ -107,9 +131,9 @@ export default {
           name: filmData.nameEn ?? filmData.nameRu,
           length: filmData.filmLength,
           year: filmData.year,
-          country: filmData.countries[0].country,
-          genres: filmData.genres[0].genre,
-          rating: filmData.rating,
+          country: filmData.countries[0]?.country,
+          genres: filmData.genres[0]?.genre,
+          rating: filmData.rating !== null ? filmData.rating : "-",
           ratingVoteCount: filmData.ratingVoteCount,
           posterUrlPreview: filmData.posterUrlPreview,
           id: filmData.filmId,
@@ -123,6 +147,7 @@ export default {
       return {
         category: this.category,
         page: this.page,
+        searchQuery: this.searchQuery,
       };
     },
   },
@@ -131,7 +156,7 @@ export default {
       window.history.replaceState(
         null,
         document.title,
-        `${window.location.pathname}?category=${value.category}&page=${value.page}`
+        `${window.location.pathname}?category=${value.category}&search=${value.searchQuery}&page=${value.page}`
       );
     },
   },

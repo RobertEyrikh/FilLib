@@ -1,6 +1,21 @@
 <template>
-  <router-view />
+  <component :is="layout">
+    <router-view />
+  </component>
 </template>
+
+<script>
+import MainLayout from "@/layouts/MainLayout.vue";
+import EmptyLayout from "@/layouts/EmptyLayout.vue";
+export default {
+  components: { MainLayout, EmptyLayout },
+  computed: {
+    layout() {
+      return (this.$route.meta.layout || "empty") + "-layout";
+    },
+  },
+};
+</script>
 
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;600&display=swap");
