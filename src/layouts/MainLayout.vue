@@ -31,11 +31,6 @@ export default {
       queryString: "",
     };
   },
-  provide() {
-    return {
-      queryString: this.queryString,
-    };
-  },
   methods: {
     sidebarStatus(status) {
       this.isSidebarOpen = status;
@@ -45,7 +40,6 @@ export default {
     },
     transferQueryString(query) {
       this.queryString = query;
-      console.log(this.queryString);
     },
   },
 };

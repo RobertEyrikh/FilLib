@@ -4,7 +4,6 @@
       :category="category"
       @changeCategory="changeCategory"
     ></the-navbar>
-    <button @click="getSearchedFilms">check</button>
     <section class="films-list">
       <ul>
         <router-link
@@ -56,7 +55,6 @@
 
 <script>
 import ThePagination from "@/components/ThePagination.vue";
-//import MainLayout from "@/layouts/MainLayout.vue";
 import TheNavbar from "@/components/TheNavbar.vue";
 import { getFilmsFromApi, getFilmsByKeyword } from "@/api/getFilms";
 export default {
@@ -85,11 +83,9 @@ export default {
     if (windowData.page) {
       this.page = +windowData.page;
     }
-    console.log(windowData.search);
     if (windowData.search) {
       this.searchQuery = windowData.search;
       this.getSearchedFilms();
-      console.log(this.searchQuery);
     } else {
       this.getFilms();
     }
@@ -101,14 +97,15 @@ export default {
       });
     },
     getSearchedFilms() {
-      this.searchQuery = this.queryString;
+      //this.searchQuery = this.queryString;
       this.films = [];
       this.category = "";
-      getFilmsByKeyword(this.queryString, this.page, (filmsData) => {
+      getFilmsByKeyword(this.searchQuery, this.page, (filmsData) => {
         this.addFilms(filmsData);
       });
     },
     changeCategory(category) {
+      this.searchQuery = "";
       this.page = 1;
       this.category = category;
       this.films = [];
@@ -154,10 +151,14 @@ export default {
   watch: {
     pageStateOptions(value) {
       window.history.replaceState(
-        null,
+        history.state,
         document.title,
         `${window.location.pathname}?category=${value.category}&search=${value.searchQuery}&page=${value.page}`
       );
+    },
+    queryString() {
+      this.searchQuery = this.queryString;
+      this.getSearchedFilms();
     },
   },
 };

@@ -84,7 +84,7 @@ import { getCurrentFilmFromApi } from "@/api/getFilms";
 export default {
   data() {
     return {
-      film: {},
+      film: { coverUrl: "/" },
       id: this.$route.params["id"],
     };
   },

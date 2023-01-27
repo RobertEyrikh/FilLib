@@ -5,9 +5,27 @@
     </header>
     <!-- <header class="sidebar-header">Menu</header> -->
     <nav class="sidebar-nav">
-      <router-link to="/" class="sidebar-link"> Home </router-link>
-      <router-link to="/" class="sidebar-link"> Watchlist </router-link>
-      <router-link to="/" class="sidebar-link"> Viewed films </router-link>
+      <router-link
+        to="/home"
+        class="sidebar-link"
+        :class="{ active: $route.name == 'home' }"
+      >
+        Home
+      </router-link>
+      <router-link
+        to="/watchlist"
+        class="sidebar-link"
+        :class="{ active: $route.name == 'watchlist' }"
+      >
+        Watchlist
+      </router-link>
+      <router-link
+        to="/viewed"
+        class="sidebar-link"
+        :class="{ active: $route.name == 'viewed' }"
+      >
+        Viewed films
+      </router-link>
       <router-link to="/login" v-if="!isLoginInHeader" class="sidebar-link">
         Login
       </router-link>
@@ -17,12 +35,22 @@
 
 <script>
 export default {
+  data() {
+    return {
+      url: window.location.pathname,
+    };
+  },
   props: {
     isSidebarOpen: {
       type: Boolean,
     },
     isLoginInHeader: {
       type: Boolean,
+    },
+  },
+  methods: {
+    check() {
+      console.log(this.$route.meta);
     },
   },
 };
@@ -41,12 +69,6 @@ export default {
   visibility: visible;
   border-right: 2px solid $text-color-disable;
   color: $text-color-active;
-
-  // .sidebar-header {
-  //   width: 100%;
-  //   display: block;
-  //   padding: 0.75em 1em;
-  // }
 }
 .sidebar-header {
   margin: 15px 8px 15px 16px;
@@ -85,6 +107,9 @@ export default {
   &:hover {
     color: $text-color-active;
   }
+}
+.active {
+  color: $text-color-active;
 }
 @media screen and (max-width: $large) {
   .sidebar {

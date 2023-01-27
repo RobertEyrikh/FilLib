@@ -1,12 +1,28 @@
-import { createRouter, createMemoryHistory } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 
 const routes = [
   {
     path: "/",
+    redirect: "/home",
+  },
+  {
+    path: "/home",
     name: "home",
     meta: { layout: "main" },
     component: HomeView,
+  },
+  {
+    path: "/watchlist",
+    name: "watchlist",
+    meta: { layout: "main" },
+    component: () => import("@/views/WatchlistView.vue"),
+  },
+  {
+    path: "/viewed",
+    name: "viewed",
+    meta: { layout: "main" },
+    component: () => import("@/views/ViewedView.vue"),
   },
   {
     path: "/login",
@@ -37,7 +53,7 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createMemoryHistory(process.env.BASE_URL),
+  history: createWebHistory(process.env.BASE_URL),
   routes,
 });
 
