@@ -14,6 +14,13 @@ export default {
       return (this.$route.meta.layout || "empty") + "-layout";
     },
   },
+  mounted() {
+    this.$store.commit("SET_TOKEN_FROM_LOCALSTORAGE");
+    this.$store.dispatch("getAuthCurrentUser");
+  },
+  updated() {
+    this.$store.dispatch("getAuthCurrentUser");
+  },
 };
 </script>
 

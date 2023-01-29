@@ -1,0 +1,26 @@
+const URL = "http://localhost:5000";
+
+export const getAuthCurrentUser = (token, cb) => {
+  fetch(`${URL}/user`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.json())
+    .then((json) => cb(json))
+    .catch((err) => console.log(err));
+};
+
+export const authByEmail = (user, cb) => {
+  fetch(`${URL}/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(user),
+  })
+    .then((res) => res.json())
+    .then((json) => cb(json));
+};

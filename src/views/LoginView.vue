@@ -6,23 +6,27 @@
         <p class="login-header__description">
           Sign in to a <strong>Eyrikh Productions</strong> account
         </p>
-        <my-button-2 class="google-button">Sign in with Google</my-button-2>
+        <my-button-2 @click.prevent="check" class="google-button"
+          >Sign in with Google</my-button-2
+        >
       </header>
       <p class="line"><span class="line__or">or</span></p>
       <div class="login-fields">
         <label class="email-header">Your email</label>
-        <input type="text" class="email" />
+        <input v-model="email" type="text" class="email" />
         <div class="error">
           <label v-if="false" class="error-message">Error</label>
         </div>
         <label class="password-header">Your password</label>
-        <input type="password" class="password" />
+        <input v-model="password" type="password" class="password" />
         <div class="error">
           <label v-if="false" class="error-message">Error</label>
         </div>
       </div>
       <footer class="login-footer">
-        <my-button-2 class="login-button">Sign in</my-button-2>
+        <my-button-2 @click.prevent="signIn" class="login-button"
+          >Sign in</my-button-2
+        >
         <div class="login-footer__link">
           <router-link to="/register" class="link">Register</router-link>
           <router-link to="/password_reset" class="link"
@@ -35,9 +39,29 @@
 </template>
 
 <script>
+//import { authByEmail } from "@/api/user";
 import MyButton2 from "@/components/UI/MyButton2.vue";
 export default {
   components: { MyButton2 },
+  data() {
+    return {
+      email: "",
+      password: "",
+    };
+  },
+  methods: {
+    check() {
+      console.log(this.$store.state.user.isAuth);
+    },
+    signIn() {
+      let user = {
+        email: this.email,
+        password: this.password,
+      };
+      this.$store.dispatch("authorizationByEmail", user);
+      this.$router.push("/home");
+    },
+  },
 };
 </script>
 

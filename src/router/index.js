@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import store from "@/store";
 
 const routes = [
   {
@@ -27,11 +28,13 @@ const routes = [
   {
     path: "/login",
     name: "login",
+    beforeEnter: redirectIfNotGuest,
     component: () => import("@/views/LoginView.vue"),
   },
   {
     path: "/register",
     name: "register",
+    beforeEnter: redirectIfNotGuest,
     component: () => import("@/views/RegisterView.vue"),
   },
   {
@@ -56,5 +59,40 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 });
+
+async function redirectIfNotGuest(to, from, next) {
+  const isGuest = await getIsAuthState();
+  if (isGuest) {
+    next("/");
+  } else {
+    next();
+  }
+}
+
+function getIsAuthState() {
+  return new Promise((resolve) => {
+    if (store.state.user.isAuth === false) {
+      const unwatch = store.watch(
+        () => store.state.user.isAuth,
+        (value) => {
+          unwatch();
+          resolve(value);
+        }
+      );
+    } else {
+      resolve(store.state.user.isAuth);
+    }
+  });
+}
+// router.beforeEach((to, from, next) => {
+//   const isGuest = "store.state.user.isAuth"
+//   const requireGuest = to.matched.some((record) => record.meta.isGuest);
+//   console.log(isGuest);
+//   if (isGuest && requireGuest) {
+//     next("/");
+//   } else {
+//     next();
+//   }
+// });
 
 export default router;

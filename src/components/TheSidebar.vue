@@ -29,6 +29,7 @@
       <router-link to="/login" v-if="!isLoginInHeader" class="sidebar-link">
         Login
       </router-link>
+      <router-link to="/" class="sidebar-link"> Username </router-link>
     </nav>
   </aside>
 </template>

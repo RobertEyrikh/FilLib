@@ -2,9 +2,13 @@
   <header class="navbar">
     <the-search @query-string="transferQueryString" />
     <hamburger-button class="hamburger-button" @isSidebarOpen="sidebarStatus" />
-    <my-button @click="this.$router.push('/login')" v-if="isLoginInHeader"
+    <my-button
+      @click="this.$router.push('/login')"
+      v-if="isLoginInHeader && !isAuth"
       >Login</my-button
     >
+    <button @click="issAuth">is auth</button>
+    <my-button @click="logout" v-if="isAuth">Logout</my-button>
   </header>
 </template>
 
@@ -12,6 +16,7 @@
 import MyButton from "@/components/UI/MyButton.vue";
 import TheSearch from "@/components/TheSearch.vue";
 import HamburgerButton from "@/components/UI/HamburgerButton.vue";
+import { mapState } from "vuex";
 export default {
   components: { TheSearch, HamburgerButton, MyButton },
   data() {
@@ -21,6 +26,13 @@ export default {
     };
   },
   methods: {
+    issAuth() {
+      console.log(this.$store.state.user.isAuth);
+    },
+    logout() {
+      this.$store.dispatch("logout");
+      this.$router.push("/home");
+    },
     transferQueryString(query) {
       this.$emit("query-string", query);
     },
@@ -33,6 +45,11 @@ export default {
       } else this.isLoginInHeader = false;
       this.$emit("isLoginInHeader", this.isLoginInHeader);
     },
+  },
+  computed: {
+    ...mapState({
+      isAuth: (state) => state.user.isAuth,
+    }),
   },
   created() {
     this.onLoginVisible();
