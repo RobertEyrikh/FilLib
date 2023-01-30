@@ -1,10 +1,14 @@
-import { authByEmail } from "@/api/user";
-import { getAuthCurrentUser } from "@/api/user";
+import {
+  getAuthCurrentUser,
+  registrationByEmail,
+  authByEmail,
+} from "@/api/user";
 
 export default {
   state: {
     token: "",
-    isAuth: false,
+    isAuth: null,
+    regResponse: "",
   },
   mutations: {
     SET_TOKEN: (state, payload) => {
@@ -16,7 +20,7 @@ export default {
     },
     SET_TOKEN_FROM_LOCALSTORAGE: (state) => {
       let token = localStorage.getItem("token");
-      if (token) {
+      if (token && token != "undefined") {
         state.token = JSON.parse(token);
       }
     },
@@ -29,16 +33,28 @@ export default {
     DELETE_TOKEN_FROM_LOCALSTORAGE: () => {
       localStorage.removeItem("token");
     },
+    SET_REGISTRATION_RESPONSE: (state, payload) => {
+      state.regResponse = payload;
+    },
   },
   actions: {
+    registration({ commit }, payload) {
+      registrationByEmail(payload, (response) => {
+        commit("SET_REGISTRATION_RESPONSE", response.message);
+      });
+    },
     authorizationByEmail({ commit }, payload) {
-      authByEmail(payload, (tokenObj) => {
-        let token = tokenObj.token;
-        commit("SET_TOKEN", token);
+      authByEmail(payload, (response) => {
+        let token = response.token;
+        if (token) {
+          commit("SET_TOKEN", token);
+        }
       });
     },
     getAuthCurrentUser({ state, commit }) {
       if (state.token == "") {
+        commit("SET_AUTH_FALSE");
+        commit("DELETE_TOKEN_FROM_LOCALSTORAGE");
         return;
       }
       getAuthCurrentUser(state.token, (response) => {
@@ -46,6 +62,7 @@ export default {
           commit("SET_AUTH_TRUE");
         } else {
           commit("SET_AUTH_FALSE");
+          commit("DELETE_TOKEN_FROM_LOCALSTORAGE");
         }
       });
     },
@@ -55,9 +72,4 @@ export default {
       commit("SET_AUTH_FALSE");
     },
   },
-  // getters: {
-  //   isAuth: (state) => {
-  //     return state.isAuth;
-  //   },
-  // },
 };

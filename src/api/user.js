@@ -24,3 +24,15 @@ export const authByEmail = (user, cb) => {
     .then((res) => res.json())
     .then((json) => cb(json));
 };
+
+export const registrationByEmail = (user, cb) => {
+  fetch(`${URL}/registration`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(user),
+  })
+    .then((res) => res.json())
+    .then((json) => cb(json));
+};

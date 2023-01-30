@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import store from "@/store";
+import {
+  redirectIfNotGuest,
+  redirectIfNotAuth,
+} from "@/middlewares/AuthMiddleware";
 
 const routes = [
   {
@@ -17,23 +20,27 @@ const routes = [
     path: "/watchlist",
     name: "watchlist",
     meta: { layout: "main" },
+    beforeEnter: redirectIfNotAuth,
     component: () => import("@/views/WatchlistView.vue"),
   },
   {
     path: "/viewed",
     name: "viewed",
     meta: { layout: "main" },
+    beforeEnter: redirectIfNotAuth,
     component: () => import("@/views/ViewedView.vue"),
   },
   {
     path: "/login",
     name: "login",
+    //meta: { isGuest: true },
     beforeEnter: redirectIfNotGuest,
     component: () => import("@/views/LoginView.vue"),
   },
   {
     path: "/register",
     name: "register",
+    //meta: { isGuest: true },
     beforeEnter: redirectIfNotGuest,
     component: () => import("@/views/RegisterView.vue"),
   },
@@ -53,46 +60,17 @@ const routes = [
     meta: { layout: "main" },
     component: () => import("@/views/FilmView.vue"),
   },
+  {
+    path: "/not_authorized",
+    name: "not_authorized",
+    meta: { layout: "main" },
+    component: () => import("@/views/NotAuthView.vue"),
+  },
 ];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 });
-
-async function redirectIfNotGuest(to, from, next) {
-  const isGuest = await getIsAuthState();
-  if (isGuest) {
-    next("/");
-  } else {
-    next();
-  }
-}
-
-function getIsAuthState() {
-  return new Promise((resolve) => {
-    if (store.state.user.isAuth === false) {
-      const unwatch = store.watch(
-        () => store.state.user.isAuth,
-        (value) => {
-          unwatch();
-          resolve(value);
-        }
-      );
-    } else {
-      resolve(store.state.user.isAuth);
-    }
-  });
-}
-// router.beforeEach((to, from, next) => {
-//   const isGuest = "store.state.user.isAuth"
-//   const requireGuest = to.matched.some((record) => record.meta.isGuest);
-//   console.log(isGuest);
-//   if (isGuest && requireGuest) {
-//     next("/");
-//   } else {
-//     next();
-//   }
-// });
 
 export default router;

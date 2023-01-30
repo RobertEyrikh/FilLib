@@ -67,6 +67,7 @@ export default {};
 @import "@/assets/styles/_variables.scss";
 .watchlist-view {
   background-color: $primary-color;
+  min-height: 100vh;
   height: auto;
   padding: $hight-margin;
   color: $text-color-disable;
@@ -75,7 +76,7 @@ export default {};
   display: grid;
   grid-column-gap: $hight-margin;
   grid-row-gap: $hight-margin;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 500px));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 }
 .film-wrapper {
   text-decoration: none;

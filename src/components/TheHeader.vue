@@ -5,7 +5,7 @@
     <my-button
       @click="this.$router.push('/login')"
       v-if="isLoginInHeader && !isAuth"
-      >Login</my-button
+      >Log in</my-button
     >
     <button @click="issAuth">is auth</button>
     <my-button @click="logout" v-if="isAuth">Logout</my-button>
@@ -28,6 +28,7 @@ export default {
   methods: {
     issAuth() {
       console.log(this.$store.state.user.isAuth);
+      console.log(this.$store.state.user.token);
     },
     logout() {
       this.$store.dispatch("logout");

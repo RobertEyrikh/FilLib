@@ -10,21 +10,21 @@
       <div class="register-fields">
         <div class="register-fields__field">
           <label class="name-header">Your name</label>
-          <input type="text" class="name" />
+          <input v-model="username" type="text" class="name" />
           <div class="error">
             <label v-if="true" class="error-message">Error</label>
           </div>
         </div>
         <div class="register-fields__field">
           <label class="email-header">Your email</label>
-          <input type="text" class="email" />
+          <input v-model="email" type="text" class="email" />
           <div class="error">
             <label v-if="false" class="error-message">Error</label>
           </div>
         </div>
         <div class="register-fields__field">
           <label class="password-header">Your password</label>
-          <input type="password" class="password" />
+          <input v-model="password" type="password" class="password" />
           <div class="error">
             <label v-if="false" class="error-message">Error</label>
           </div>
@@ -40,7 +40,10 @@
         </div>
       </div>
       <footer class="register-footer">
-        <my-button-2 class="register-button">Register</my-button-2>
+        <div>hello</div>
+        <my-button-2 @click.prevent="registration" class="register-button"
+          >Register</my-button-2
+        >
         <div class="register-footer__link">
           <p class="terms-links">
             By creating an account, you agree to the Eyrikh Productions
@@ -62,6 +65,23 @@
 import MyButton2 from "@/components/UI/MyButton2.vue";
 export default {
   components: { MyButton2 },
+  data() {
+    return {
+      username: "",
+      email: "",
+      password: "",
+    };
+  },
+  methods: {
+    registration() {
+      let user = {
+        username: this.username,
+        email: this.email,
+        password: this.password,
+      };
+      this.$store.dispatch("registration", user);
+    },
+  },
 };
 </script>
 

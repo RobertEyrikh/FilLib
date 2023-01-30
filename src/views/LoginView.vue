@@ -39,7 +39,6 @@
 </template>
 
 <script>
-//import { authByEmail } from "@/api/user";
 import MyButton2 from "@/components/UI/MyButton2.vue";
 export default {
   components: { MyButton2 },

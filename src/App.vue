@@ -19,6 +19,7 @@ export default {
     this.$store.dispatch("getAuthCurrentUser");
   },
   updated() {
+    this.$store.commit("SET_TOKEN_FROM_LOCALSTORAGE");
     this.$store.dispatch("getAuthCurrentUser");
   },
 };
