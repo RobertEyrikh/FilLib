@@ -66,6 +66,13 @@ const routes = [
     meta: { layout: "main" },
     component: () => import("@/views/NotAuthView.vue"),
   },
+  {
+    path: "/profile",
+    name: "profile",
+    meta: { layout: "main" },
+    beforeEnter: redirectIfNotAuth,
+    component: () => import("@/views/UserProfileView.vue"),
+  },
 ];
 
 const router = createRouter({

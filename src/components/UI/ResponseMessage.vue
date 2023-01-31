@@ -1,7 +1,7 @@
 <template>
-  <button class="my-button-2">
+  <div class="response-message">
     <slot></slot>
-  </button>
+  </div>
 </template>
 
 <script>
@@ -10,16 +10,14 @@ export default {};
 
 <style lang="scss" scoped>
 @import "@/assets/styles/_variables.scss";
-.my-button-2 {
-  border: none;
-  border-radius: 5px;
-  height: 45px;
-  padding: $xs-margin $medium-margin;
-  transition: all 0.2s;
+.response-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   color: $text-color-active;
-  cursor: pointer;
-  &:hover {
-    -webkit-filter: saturate(4);
-  }
+  border-radius: 5px;
+  height: 55px;
+  padding: $xs-margin $medium-margin;
+  margin-bottom: $little-margin;
 }
 </style>

@@ -40,7 +40,16 @@
         </div>
       </div>
       <footer class="register-footer">
-        <div>hello</div>
+        <transition name="fade">
+          <response-message
+            :class="{
+              response_error: isResponseError,
+              response_success: !isResponseError,
+            }"
+            v-if="isRegistrationResponse"
+            >{{ message }}</response-message
+          >
+        </transition>
         <my-button-2 @click.prevent="registration" class="register-button"
           >Register</my-button-2
         >
@@ -63,8 +72,10 @@
 
 <script>
 import MyButton2 from "@/components/UI/MyButton2.vue";
+import ResponseMessage from "@/components/UI/ResponseMessage.vue";
+import { mapState } from "vuex";
 export default {
-  components: { MyButton2 },
+  components: { MyButton2, ResponseMessage },
   data() {
     return {
       username: "",
@@ -80,6 +91,24 @@ export default {
         password: this.password,
       };
       this.$store.dispatch("registration", user);
+      setTimeout(() => {
+        if (this.$store.getters.regResponse.isSuccess) {
+          this.$router.push("/login");
+        }
+      }, "3000");
+    },
+  },
+  computed: {
+    ...mapState({
+      message: (state) => state.user.regResponse.message,
+    }),
+    isRegistrationResponse() {
+      return this.$store.getters.regResponse.isSuccess != undefined
+        ? true
+        : false;
+    },
+    isResponseError() {
+      return this.$store.getters.regResponse.isSuccess ? false : true;
     },
   },
 };
@@ -159,6 +188,12 @@ export default {
     color: $text-color-active;
   }
 }
+.response_error {
+  background-color: $error-color;
+}
+.response_success {
+  background-color: $green-color;
+}
 @media screen and (max-width: $small) {
   .register-form {
     width: 25rem;
@@ -168,5 +203,14 @@ export default {
   .register-form {
     width: 20rem;
   }
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

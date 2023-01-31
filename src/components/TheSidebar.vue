@@ -3,7 +3,6 @@
     <header class="sidebar-header">
       <img class="logo" src="@/assets/icons/logo.svg" />
     </header>
-    <!-- <header class="sidebar-header">Menu</header> -->
     <nav class="sidebar-nav">
       <router-link
         to="/home"
@@ -26,15 +25,22 @@
       >
         Viewed films
       </router-link>
-      <router-link to="/login" v-if="!isLoginInHeader" class="sidebar-link">
+      <router-link
+        to="/login"
+        v-if="!isLoginInHeader && !isAuth"
+        class="sidebar-link"
+      >
         Login
       </router-link>
-      <router-link to="/" class="sidebar-link"> Username </router-link>
+      <router-link to="/profile" v-if="user" class="sidebar-link">
+        {{ user.username }}
+      </router-link>
     </nav>
   </aside>
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -49,10 +55,11 @@ export default {
       type: Boolean,
     },
   },
-  methods: {
-    check() {
-      console.log(this.$route.meta);
-    },
+  computed: {
+    ...mapState({
+      isAuth: (state) => state.user.isAuth,
+      user: (state) => state.user.user,
+    }),
   },
 };
 </script>

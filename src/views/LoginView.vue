@@ -24,6 +24,11 @@
         </div>
       </div>
       <footer class="login-footer">
+        <transition name="fade">
+          <response-message class="auth-error" v-if="message">{{
+            message
+          }}</response-message>
+        </transition>
         <my-button-2 @click.prevent="signIn" class="login-button"
           >Sign in</my-button-2
         >
@@ -40,8 +45,10 @@
 
 <script>
 import MyButton2 from "@/components/UI/MyButton2.vue";
+import ResponseMessage from "@/components/UI/ResponseMessage.vue";
+import { mapState } from "vuex";
 export default {
-  components: { MyButton2 },
+  components: { MyButton2, ResponseMessage },
   data() {
     return {
       email: "",
@@ -58,8 +65,19 @@ export default {
         password: this.password,
       };
       this.$store.dispatch("authorizationByEmail", user);
-      this.$router.push("/home");
+      setTimeout(() => {
+        if (!this.message) {
+          this.$router.push("/");
+          this.email = "";
+          this.password = "";
+        }
+      }, "2000");
     },
+  },
+  computed: {
+    ...mapState({
+      message: (state) => state.user.authResponse,
+    }),
   },
 };
 </script>
@@ -151,12 +169,24 @@ export default {
   display: flex;
   justify-content: space-between;
 }
+.auth-error {
+  background-color: $error-color;
+}
 .link {
   text-decoration: none;
   color: $text-color-disable;
   &:hover {
     color: $text-color-active;
   }
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 @media screen and (max-width: $small) {
   .login-form {

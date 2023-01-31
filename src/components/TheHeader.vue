@@ -7,8 +7,10 @@
       v-if="isLoginInHeader && !isAuth"
       >Log in</my-button
     >
-    <button @click="issAuth">is auth</button>
-    <my-button @click="logout" v-if="isAuth">Logout</my-button>
+    <button v-if="false" @click="issAuth">is auth</button>
+    <my-button @click="this.$router.push('/profile')" v-if="isAuth">{{
+      user.username
+    }}</my-button>
   </header>
 </template>
 
@@ -27,7 +29,7 @@ export default {
   },
   methods: {
     issAuth() {
-      console.log(this.$store.state.user.isAuth);
+      console.log(this.$store.state.user.user);
       console.log(this.$store.state.user.token);
     },
     logout() {
@@ -50,6 +52,7 @@ export default {
   computed: {
     ...mapState({
       isAuth: (state) => state.user.isAuth,
+      user: (state) => state.user.user,
     }),
   },
   created() {
