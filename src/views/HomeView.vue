@@ -35,12 +35,17 @@
               <button class="watchlist-button">
                 <img src="@/assets/icons/star.svg" class="watchlist-image" />
               </button>
-              <button class="viewed-button">
-                <img src="@/assets/icons/eye.svg" class="viewed-image" />
-              </button>
+              <viewed-button
+                @click.prevent="openModal({ name: film.name, id: film.id })"
+              ></viewed-button>
             </div>
           </div>
         </router-link>
+        <viewed-modal
+          :isModalOpen="isModalOpen"
+          :film="selectedFilm"
+          @close="isModalOpen = false"
+        ></viewed-modal>
       </ul>
     </section>
     <the-pagination
@@ -54,18 +59,23 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import ViewedModal from "@/components/ViewedModal.vue";
+import ViewedButton from "@/components/UI/ViewedButton.vue";
 import ThePagination from "@/components/ThePagination.vue";
 import TheNavbar from "@/components/TheNavbar.vue";
 import { getFilmsFromApi, getFilmsByKeyword } from "@/api/getFilms";
 export default {
-  components: { TheNavbar, ThePagination },
+  components: { TheNavbar, ThePagination, ViewedButton, ViewedModal },
   data() {
     return {
+      isModalOpen: false,
       films: [],
       pagesCount: 0,
       page: 1,
       category: "best",
       searchQuery: "",
+      selectedFilm: {},
     };
   },
   props: {
@@ -91,6 +101,13 @@ export default {
     }
   },
   methods: {
+    openModal(film) {
+      this.isModalOpen = true;
+      this.selectedFilm = film;
+    },
+    changeViewedList() {
+      console.log(this.viewidFilms);
+    },
     getFilms() {
       getFilmsFromApi(this.category, this.page, (filmsData) => {
         this.addFilms(filmsData);
@@ -140,6 +157,7 @@ export default {
     },
   },
   computed: {
+    ...mapGetters(["viewidFilms"]),
     pageStateOptions() {
       return {
         category: this.category,

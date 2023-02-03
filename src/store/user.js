@@ -92,7 +92,9 @@ export default {
           let user = {
             email: response.email,
             username: response.username,
+            viewedFilms: response.viewedFilms,
           };
+          console.log(user);
           commit("SET_USER", user);
           commit("SET_AUTH_TRUE");
         } else {
@@ -112,6 +114,9 @@ export default {
   getters: {
     regResponse: (state) => {
       return state.regResponse;
+    },
+    viewidFilms: (state) => {
+      return state.user["viewedFilms"].map((elem) => elem.filmId);
     },
   },
 };
