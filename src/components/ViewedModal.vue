@@ -25,7 +25,11 @@
         You can write a note about the film if you wish:
       </p>
       <div class="description">
-        <textarea v-model="description" class="description-input"></textarea>
+        <textarea
+          v-model.trim="description"
+          maxlength="100"
+          class="description-input"
+        ></textarea>
       </div>
     </div>
     <div class="modal-buttons">
@@ -40,7 +44,7 @@
 <script>
 import MyButton2 from "@/components/UI/MyButton2.vue";
 import { mapGetters } from "vuex";
-import { addFilmToViewed } from "@/api/film";
+//import { addFilmToViewed } from "@/api/film";
 export default {
   components: { MyButton2 },
   data() {
@@ -67,19 +71,14 @@ export default {
       this.$emit("close");
     },
     changeViewedList() {
-      if (this.viewidFilms.find((elem) => elem == this.film.id)) {
-        console.log("movie already added");
-      } else {
-        let film = {
-          filmId: this.film.id,
-          date: this.date,
-          rate: this.rating,
-          description: this.description,
-        };
-        addFilmToViewed(film, (res) => {
-          console.log(res);
-        });
-      }
+      const film = {
+        rate: this.rating,
+        filmId: this.film.id,
+        date: this.date,
+        description: this.description,
+      };
+      this.$store.dispatch("changeViewedList", film);
+      this.closeModal();
     },
   },
   computed: {

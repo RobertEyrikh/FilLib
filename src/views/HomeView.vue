@@ -35,9 +35,16 @@
               <button class="watchlist-button">
                 <img src="@/assets/icons/star.svg" class="watchlist-image" />
               </button>
-              <viewed-button
+              <button
                 @click.prevent="openModal({ name: film.name, id: film.id })"
-              ></viewed-button>
+                class="viewed-button"
+              >
+                <img
+                  src="@/assets/icons/eye.svg"
+                  :class="{ active: isViewedFilm(film.id) }"
+                  class="viewed-image"
+                />
+              </button>
             </div>
           </div>
         </router-link>
@@ -59,14 +66,13 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 import ViewedModal from "@/components/ViewedModal.vue";
-import ViewedButton from "@/components/UI/ViewedButton.vue";
 import ThePagination from "@/components/ThePagination.vue";
 import TheNavbar from "@/components/TheNavbar.vue";
 import { getFilmsFromApi, getFilmsByKeyword } from "@/api/getFilms";
 export default {
-  components: { TheNavbar, ThePagination, ViewedButton, ViewedModal },
+  components: { TheNavbar, ThePagination, ViewedModal },
   data() {
     return {
       isModalOpen: false,
@@ -101,12 +107,18 @@ export default {
     }
   },
   methods: {
-    openModal(film) {
-      this.isModalOpen = true;
-      this.selectedFilm = film;
+    isViewedFilm(id) {
+      //console.log(this.user);
+      return this.viewedFilms?.find((elem) => elem == id);
     },
-    changeViewedList() {
-      console.log(this.viewidFilms);
+    openModal(film) {
+      if (this.viewedFilms.find((elem) => elem == film.id)) {
+        this.$router.push("/viewed");
+      } else {
+        this.isModalOpen = true;
+        this.selectedFilm = film;
+        console.log(film);
+      }
     },
     getFilms() {
       getFilmsFromApi(this.category, this.page, (filmsData) => {
@@ -157,7 +169,10 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["viewidFilms"]),
+    ...mapState({
+      user: (state) => state.user.user,
+    }),
+    ...mapGetters(["viewedFilms"]),
     pageStateOptions() {
       return {
         category: this.category,
@@ -291,6 +306,10 @@ export default {
   &:hover {
     background-color: #535357;
     scale: 1.1;
+  }
+  .active {
+    filter: invert(24%) sepia(70%) saturate(3932%) hue-rotate(232deg)
+      brightness(100%) contrast(97%);
   }
 }
 .watchlist-image,

@@ -3,6 +3,7 @@ import {
   registrationByEmail,
   authByEmail,
 } from "@/api/user";
+import { addFilmToViewed, deleteFilmFromViewed } from "@/api/film";
 
 export default {
   state: {
@@ -94,7 +95,6 @@ export default {
             username: response.username,
             viewedFilms: response.viewedFilms,
           };
-          console.log(user);
           commit("SET_USER", user);
           commit("SET_AUTH_TRUE");
         } else {
@@ -110,13 +110,45 @@ export default {
       commit("SET_AUTH_FALSE");
       commit("DELETE_USER");
     },
+    changeViewedList({ commit, getters }, payload) {
+      if (getters.viewedFilms.find((elem) => elem == payload.filmId)) {
+        console.log("movie already added");
+      } else {
+        addFilmToViewed(payload, (response) => {
+          if (response.email) {
+            let user = {
+              email: response.email,
+              username: response.username,
+              viewedFilms: response.viewedFilms,
+            };
+            commit("SET_USER", user);
+          }
+        });
+      }
+    },
+    deleteFilmFromViewed({ commit }, payload) {
+      deleteFilmFromViewed(payload, (response) => {
+        if (response.email) {
+          let user = {
+            email: response.email,
+            username: response.username,
+            viewedFilms: response.viewedFilms,
+          };
+          console.log(user);
+          commit("SET_USER", user);
+        }
+      });
+    },
   },
   getters: {
     regResponse: (state) => {
       return state.regResponse;
     },
-    viewidFilms: (state) => {
-      return state.user["viewedFilms"].map((elem) => elem.filmId);
+    viewedFilms: (state) => {
+      return state.user["viewedFilms"]?.map((elem) => elem.filmId);
+    },
+    viewedFilmsData: (state) => {
+      return state.user["viewedFilms"];
     },
   },
 };
