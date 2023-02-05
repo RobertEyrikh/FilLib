@@ -41,3 +41,17 @@ export const getFilmById = (id, cb) => {
     .then((json) => cb(json))
     .catch((err) => console.log(err));
 };
+
+export const changeFilmInViewed = (film, cb) => {
+  fetch(`${URL}/changeFilmInViewed`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${store.state.user.token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(film),
+  })
+    .then((res) => res.json())
+    .then((json) => cb(json))
+    .catch((err) => console.log(err));
+};

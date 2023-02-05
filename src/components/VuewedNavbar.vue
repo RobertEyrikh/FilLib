@@ -1,11 +1,19 @@
 <template>
   <nav class="vuewed-navbar">
-    <div class="vuewed-category active">
+    <router-link
+      to="/viewed/films"
+      class="vuewed-category"
+      :class="{ active: $route.path == '/viewed/films' }"
+    >
       <p class="vuewed-category__name">Films</p>
-    </div>
-    <div class="vuewed-category">
+    </router-link>
+    <router-link
+      to="/viewed/statistics"
+      class="vuewed-category"
+      :class="{ active: $route.path == '/viewed/statistics' }"
+    >
       <p class="vuewed-category__name">Statistics</p>
-    </div>
+    </router-link>
   </nav>
 </template>
 
@@ -21,6 +29,8 @@ export default {};
   margin-bottom: $extra-hight-margin;
 }
 .vuewed-category {
+  text-decoration: none;
+  color: $text-color-disable;
   margin-right: 30px;
   vertical-align: middle;
   padding-bottom: 10px;

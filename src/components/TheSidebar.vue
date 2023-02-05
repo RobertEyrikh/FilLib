@@ -19,7 +19,7 @@
         Watchlist
       </router-link>
       <router-link
-        to="/viewed"
+        to="/viewed/films"
         class="sidebar-link"
         :class="{ active: $route.name == 'viewed' }"
       >

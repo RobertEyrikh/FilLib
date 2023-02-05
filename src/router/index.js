@@ -29,6 +29,16 @@ const routes = [
     meta: { layout: "main" },
     beforeEnter: redirectIfNotAuth,
     component: () => import("@/views/ViewedView.vue"),
+    children: [
+      {
+        path: "films",
+        component: () => import("@/views/ViewedFilms.vue"),
+      },
+      {
+        path: "statistics",
+        component: () => import("@/views/ViewedStatistics.vue"),
+      },
+    ],
   },
   {
     path: "/login",

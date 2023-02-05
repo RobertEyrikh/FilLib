@@ -3,7 +3,11 @@ import {
   registrationByEmail,
   authByEmail,
 } from "@/api/user";
-import { addFilmToViewed, deleteFilmFromViewed } from "@/api/film";
+import {
+  addFilmToViewed,
+  deleteFilmFromViewed,
+  changeFilmInViewed,
+} from "@/api/film";
 
 export default {
   state: {
@@ -112,7 +116,18 @@ export default {
     },
     changeViewedList({ commit, getters }, payload) {
       if (getters.viewedFilms.find((elem) => elem == payload.filmId)) {
-        console.log("movie already added");
+        console.log(payload);
+        changeFilmInViewed(payload, (response) => {
+          if (response.email) {
+            let user = {
+              email: response.email,
+              username: response.username,
+              viewedFilms: response.viewedFilms,
+            };
+            commit("SET_USER", user);
+          }
+        });
+        console.log("1");
       } else {
         addFilmToViewed(payload, (response) => {
           if (response.email) {
@@ -134,11 +149,22 @@ export default {
             username: response.username,
             viewedFilms: response.viewedFilms,
           };
-          console.log(user);
           commit("SET_USER", user);
         }
       });
     },
+    // changeFilmInViewed({ commit }, payload) {
+    //   changeFilmInViewed(payload, (response) => {
+    //     if (response.email) {
+    //       let user = {
+    //         email: response.email,
+    //         username: response.username,
+    //         viewedFilms: response.viewedFilms,
+    //       };
+    //       commit("SET_USER", user);
+    //     }
+    //   });
+    // },
   },
   getters: {
     regResponse: (state) => {
