@@ -22,7 +22,7 @@ export const deleteFilmFromViewed = (filmId, cb) => {
       Authorization: `Bearer ${store.state.user.token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(filmId),
+    body: JSON.stringify({ filmId }),
   })
     .then((res) => res.json())
     .then((json) => cb(json))

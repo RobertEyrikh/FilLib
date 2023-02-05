@@ -49,6 +49,7 @@
           </div>
         </router-link>
         <viewed-modal
+          :modalTitle="modalTitle"
           :isModalOpen="isModalOpen"
           :film="selectedFilm"
           @close="isModalOpen = false"
@@ -82,6 +83,7 @@ export default {
       category: "best",
       searchQuery: "",
       selectedFilm: {},
+      modalTitle: "Add the movie to your viewed list",
     };
   },
   props: {

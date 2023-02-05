@@ -1,7 +1,7 @@
 <template>
   <div @click="closeModal" v-if="isModalOpen" class="modal-overlay"></div>
   <div @click.stop v-if="isModalOpen" class="modal">
-    <h1 class="modal-title">Add the movie to your viewed list</h1>
+    <h1 class="modal-title">{{ modalTitle }}</h1>
     <p class="film-name">{{ film.name }}</p>
     <div class="rating-container">
       <p class="rating-title">Rate the movie:</p>
@@ -56,6 +56,10 @@ export default {
     };
   },
   props: {
+    modalTitle: {
+      required: true,
+      type: String,
+    },
     film: {
       required: true,
       type: Object,
@@ -91,6 +95,15 @@ export default {
       let day = date.getDate();
       day < 10 ? (day = "0" + day) : day;
       return `${year}-${month}-${day}`;
+    },
+  },
+  watch: {
+    film() {
+      if (this.film.rate) {
+        this.rating = this.film.rate;
+        this.date = this.film.date;
+        this.description = this.film.description;
+      }
     },
   },
 };

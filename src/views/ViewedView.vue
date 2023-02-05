@@ -20,7 +20,12 @@
             </p>
             <p class="film__description__text">{{ film.description }}</p>
             <div class="film__buttons-container">
-              <my-button-2 class="change-button"> Change </my-button-2>
+              <my-button-2
+                @click.stop.prevent="changeFilmReview(film)"
+                class="change-button"
+              >
+                Change
+              </my-button-2>
               <my-button-2
                 class="delete-button"
                 @click.stop.prevent="deleteFilm(film.id)"
@@ -31,27 +36,42 @@
           </div>
         </div>
       </router-link>
+      <viewed-modal
+        :modalTitle="modalTitle"
+        :isModalOpen="isModalOpen"
+        :film="selectedFilm"
+        @close="isModalOpen = false"
+      ></viewed-modal>
     </section>
   </div>
 </template>
 
 <script>
+import ViewedModal from "@/components/ViewedModal.vue";
 import { mapGetters } from "vuex";
 import MyButton2 from "@/components/UI/MyButton2.vue";
 import VuewedNavbar from "@/components/VuewedNavbar.vue";
 import { getFilmById } from "@/api/film";
 export default {
-  components: { VuewedNavbar, MyButton2 },
+  components: { VuewedNavbar, MyButton2, ViewedModal },
   data() {
     return {
       films: [],
+      isModalOpen: false,
+      selectedFilm: {},
+      modalTitle: "Change the movie review",
     };
   },
   methods: {
+    changeFilmReview(film) {
+      this.selectedFilm = film;
+      this.isModalOpen = true;
+    },
     deleteFilm(id) {
       this.$store.dispatch("deleteFilmFromViewed", id);
     },
     getViewedFilmData() {
+      this.films = [];
       for (let filmData of this.viewedFilmsData) {
         let film = {
           date: filmData.date,
