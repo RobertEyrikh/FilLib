@@ -1,39 +1,50 @@
 <template>
-  <p class="film-year">2022</p>
-  <section class="viewed">
-    <router-link
-      :to="`/film/${film.id}`"
-      v-for="film in films"
-      :key="film.id"
-      class="film-wrapper"
+  <section class="viewed" v-for="(film, year) in films" :key="film.id">
+    <p class="film-year">
+      {{ year }}
+    </p>
+    <div
+      v-for="(filmsData, month) in film"
+      :key="month"
+      class="film-container-with-month"
     >
-      <div class="viewed__film">
-        <div class="film__image-wrapper">
-          <img class="image" :src="`${film.poster}`" />
-        </div>
-        <div class="film__description">
-          <p class="film__description__name">{{ film.name }}</p>
-          <p class="film__description__rating">
-            My film score: {{ film.rate }}
-          </p>
-          <p class="film__description__text">{{ film.description }}</p>
-          <div class="film__buttons-container">
-            <my-button-2
-              @click.stop.prevent="changeFilmReview(film)"
-              class="change-button"
-            >
-              Change
-            </my-button-2>
-            <my-button-2
-              class="delete-button"
-              @click.stop.prevent="deleteFilm(film.id)"
-            >
-              Delete
-            </my-button-2>
+      <p class="film-month">{{ month }}</p>
+      <div class="films-container">
+        <router-link
+          v-for="filmData in filmsData"
+          :key="filmData.id"
+          class="film-wrapper"
+          :to="`/film/${filmData.id}`"
+        >
+          <div class="viewed__film">
+            <div class="film__image-wrapper">
+              <img class="image" :src="`${filmData.poster}`" />
+            </div>
+            <div class="film__description">
+              <p class="film__description__name">{{ filmData.name }}</p>
+              <p class="film__description__rating">
+                My film score: {{ filmData.rate }}
+              </p>
+              <p class="film__description__text">{{ filmData.description }}</p>
+              <div class="film__buttons-container">
+                <my-button-2
+                  @click.stop.prevent="changeFilmReview(filmData)"
+                  class="change-button"
+                >
+                  Change
+                </my-button-2>
+                <my-button-2
+                  class="delete-button"
+                  @click.stop.prevent="deleteFilm(filmData.id)"
+                >
+                  Delete
+                </my-button-2>
+              </div>
+            </div>
           </div>
-        </div>
+        </router-link>
       </div>
-    </router-link>
+    </div>
     <viewed-modal
       :modalTitle="modalTitle"
       :isModalOpen="isModalOpen"
@@ -48,6 +59,7 @@ import ViewedModal from "@/components/ViewedModal.vue";
 import { mapGetters } from "vuex";
 import MyButton2 from "@/components/UI/MyButton2.vue";
 import { getFilmById } from "@/api/film";
+import monthFromNumber from "@/helpers/month";
 export default {
   components: { MyButton2, ViewedModal },
   data() {
@@ -66,9 +78,38 @@ export default {
     deleteFilm(id) {
       this.$store.dispatch("deleteFilmFromViewed", id);
     },
+    // getViewedFilmData() {
+    //   this.films = [];
+    //   for (let filmData of this.viewedFilmsData) {
+    //     let film = {
+    //       date: filmData.date,
+    //       description: filmData.description,
+    //       id: filmData.filmId,
+    //       rate: filmData.rate,
+    //       poster: "",
+    //       name: "",
+    //     };
+    //     getFilmById(film.id, (filmData) => {
+    //       filmData.nameOriginal
+    //         ? (film.name = filmData.nameOriginal)
+    //         : (film.name = filmData.nameRu);
+    //       film.poster = filmData.posterUrlPreview;
+    //       this.films.push(film);
+    //     });
+    //   }
+    // },
     getViewedFilmData() {
-      this.films = [];
+      this.films = {};
       for (let filmData of this.viewedFilmsData) {
+        let year = filmData.date.substr(0, 4);
+        let month = monthFromNumber[filmData.date.substr(5, 2)];
+        if (!Object.keys(this.films).includes(year)) {
+          console.log(this.films);
+          this.films[year] = {};
+        }
+        if (!Object.keys(this.films[year]).includes(month)) {
+          this.films[year][month] = [];
+        }
         let film = {
           date: filmData.date,
           description: filmData.description,
@@ -82,7 +123,7 @@ export default {
             ? (film.name = filmData.nameOriginal)
             : (film.name = filmData.nameRu);
           film.poster = filmData.posterUrlPreview;
-          this.films.push(film);
+          this.films[year][month].push(film);
         });
       }
     },
@@ -100,22 +141,33 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/assets/styles/_variables.scss";
-// .viewed-view {
-//   background-color: $primary-color;
-//   height: auto;
-//   min-height: 100vh;
-//   padding: $hight-margin;
-//   color: $text-color-disable;
-// }
 .film-year {
+  position: sticky;
+  top: -1px;
   font-size: $medium-font-size;
   color: $text-color-active;
-  margin-bottom: $hight-margin;
+  padding-bottom: $medium-margin;
+  background-color: $primary-color;
+}
+.film-month {
+  position: sticky;
+  top: 40px;
+  background-color: $primary-color;
+  font-size: $small-font-size;
+  color: $text-color-active;
+}
+.film-container-with-month {
+  margin-bottom: $extra-hight-margin;
 }
 .viewed {
-  display: grid;
   grid-column-gap: $hight-margin;
   grid-row-gap: $hight-margin;
+}
+.films-container {
+  margin-top: $medium-margin;
+  display: grid;
+  grid-column-gap: $medium-margin;
+  grid-row-gap: $medium-margin;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 }
 .film-wrapper {

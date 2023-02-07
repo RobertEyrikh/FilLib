@@ -1,5 +1,6 @@
 //const API_KEY = "8b496016-7bd2-4c9b-8893-617e3cd3d1ae";
-const API_KEY = "5e8ad341-60f2-4625-abbe-cba9ff4cc755";
+const API_KEY = "5e8ad341-60f2-4625-abbe-cba9ff4cc755h";
+
 const CATEGORIES = {
   best: "TOP_250_BEST_FILMS",
   popular: "TOP_100_POPULAR_FILMS",

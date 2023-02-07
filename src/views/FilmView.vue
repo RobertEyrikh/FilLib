@@ -81,6 +81,7 @@
       </div>
     </section>
     <viewed-modal
+      :modalTitle="modalTitle"
       :isModalOpen="isModalOpen"
       :film="{ name: film.nameRu, id: id }"
       @close="isModalOpen = false"
@@ -96,6 +97,7 @@ export default {
   components: { ViewedModal },
   data() {
     return {
+      modalTitle: "Add the movie to your viewed list",
       isModalOpen: false,
       film: { coverUrl: "/" },
       id: this.$route.params["id"],
@@ -109,10 +111,14 @@ export default {
       return this.viewedFilms?.find((elem) => elem == id);
     },
     openModal() {
-      if (this.viewedFilms.find((elem) => elem == this.id)) {
-        this.$router.push("/viewed");
+      if (this.viewedFilms) {
+        if (this.viewedFilms.find((elem) => elem == this.id)) {
+          this.$router.push("/viewed");
+        } else {
+          this.isModalOpen = true;
+        }
       } else {
-        this.isModalOpen = true;
+        this.$router.push("/login");
       }
     },
     getFilms() {

@@ -9,7 +9,9 @@
       <h1 class="statistics-description">
         Your statistics on the number of films.
       </h1>
-      <p class="statistics-viewed">Number of films watched: 22</p>
+      <p class="statistics-viewed">
+        Number of films watched: {{ user.viewedFilms.length }}
+      </p>
       <p class="statistics-watchlist">
         Number of movies to watch: {{ user.viewedFilms.length }}
       </p>

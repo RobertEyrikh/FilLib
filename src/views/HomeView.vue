@@ -114,12 +114,15 @@ export default {
       return this.viewedFilms?.find((elem) => elem == id);
     },
     openModal(film) {
-      if (this.viewedFilms.find((elem) => elem == film.id)) {
-        this.$router.push("/viewed");
+      if (this.viewedFilms) {
+        if (this.viewedFilms.find((elem) => elem == film.id)) {
+          this.$router.push("/viewed");
+        } else {
+          this.isModalOpen = true;
+          this.selectedFilm = film;
+        }
       } else {
-        this.isModalOpen = true;
-        this.selectedFilm = film;
-        console.log(film);
+        this.$router.push("/login");
       }
     },
     getFilms() {
