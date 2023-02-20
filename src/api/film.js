@@ -55,3 +55,31 @@ export const changeFilmInViewed = (film, cb) => {
     .then((json) => cb(json))
     .catch((err) => console.log(err));
 };
+
+export const addFilmToWatchlist = (filmId, cb) => {
+  fetch(`${URL}/addFilmToWatchlist`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${store.state.user.token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ filmId }),
+  })
+    .then((res) => res.json())
+    .then((json) => cb(json))
+    .catch((err) => console.log(err));
+};
+
+export const deleteFilmFromWatchlist = (filmId, cb) => {
+  fetch(`${URL}/deleteFilmFromWatchlist`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${store.state.user.token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ filmId }),
+  })
+    .then((res) => res.json())
+    .then((json) => cb(json))
+    .catch((err) => console.log(err));
+};

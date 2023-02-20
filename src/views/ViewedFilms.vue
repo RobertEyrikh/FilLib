@@ -78,33 +78,12 @@ export default {
     deleteFilm(id) {
       this.$store.dispatch("deleteFilmFromViewed", id);
     },
-    // getViewedFilmData() {
-    //   this.films = [];
-    //   for (let filmData of this.viewedFilmsData) {
-    //     let film = {
-    //       date: filmData.date,
-    //       description: filmData.description,
-    //       id: filmData.filmId,
-    //       rate: filmData.rate,
-    //       poster: "",
-    //       name: "",
-    //     };
-    //     getFilmById(film.id, (filmData) => {
-    //       filmData.nameOriginal
-    //         ? (film.name = filmData.nameOriginal)
-    //         : (film.name = filmData.nameRu);
-    //       film.poster = filmData.posterUrlPreview;
-    //       this.films.push(film);
-    //     });
-    //   }
-    // },
     getViewedFilmData() {
       this.films = {};
       for (let filmData of this.viewedFilmsData) {
         let year = filmData.date.substr(0, 4);
         let month = monthFromNumber[filmData.date.substr(5, 2)];
         if (!Object.keys(this.films).includes(year)) {
-          console.log(this.films);
           this.films[year] = {};
         }
         if (!Object.keys(this.films[year]).includes(month)) {
@@ -176,7 +155,7 @@ export default {
 }
 .viewed__film {
   border-radius: 10px;
-  height: 420px;
+  height: 450px;
   background-color: $secondary-color;
 }
 .film__image-wrapper {
@@ -192,6 +171,7 @@ export default {
   padding: $little-margin;
 }
 .film__description__name {
+  height: 40px;
   color: $text-color-active;
 }
 .film__description__text {

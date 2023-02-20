@@ -57,7 +57,7 @@ export default {
   },
   props: {
     modalTitle: {
-      required: true,
+      default: "Add the movie to your viewed list",
       type: String,
     },
     film: {

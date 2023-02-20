@@ -10,32 +10,50 @@
       <div class="register-fields">
         <div class="register-fields__field">
           <label class="name-header">Your name</label>
-          <input v-model="username" type="text" class="name" />
+          <input
+            @input="usernameError = ''"
+            v-model="username"
+            type="text"
+            class="name"
+          />
           <div class="error">
-            <label v-if="true" class="error-message">Error</label>
+            <label class="error-message">{{ usernameError }}</label>
           </div>
         </div>
         <div class="register-fields__field">
           <label class="email-header">Your email</label>
-          <input v-model="email" type="text" class="email" />
+          <input
+            @input="emailError = ''"
+            v-model="email"
+            type="text"
+            class="email"
+          />
           <div class="error">
-            <label v-if="false" class="error-message">Error</label>
+            <label class="error-message">{{ emailError }}</label>
           </div>
         </div>
         <div class="register-fields__field">
           <label class="password-header">Your password</label>
-          <input v-model="password" type="password" class="password" />
+          <input
+            @input="passwordError = ''"
+            v-model="password"
+            type="password"
+            class="password"
+          />
           <div class="error">
-            <label v-if="false" class="error-message">Error</label>
+            <label class="error-message">{{ passwordError }}</label>
           </div>
         </div>
         <div class="register-fields__field">
           <label class="confirm-password-header">Confirm your password</label>
-          <input type="password" class="confirm-password" />
+          <input
+            v-model="repeatedPassword"
+            @input="repeatedPasswordError = ''"
+            type="password"
+            class="confirm-password"
+          />
           <div class="error">
-            <label v-if="true" class="error-message"
-              >Passwords do not match</label
-            >
+            <label class="error-message">{{ repeatedPasswordError }}</label>
           </div>
         </div>
       </div>
@@ -81,21 +99,56 @@ export default {
       username: "",
       email: "",
       password: "",
+      repeatedPassword: "",
+      usernameError: "",
+      emailError: "",
+      passwordError: "",
+      repeatedPasswordError: "",
     };
   },
   methods: {
     registration() {
-      let user = {
-        username: this.username,
-        email: this.email,
-        password: this.password,
-      };
-      this.$store.dispatch("registration", user);
-      setTimeout(() => {
-        if (this.$store.getters.regResponse.isSuccess) {
-          this.$router.push("/login");
-        }
-      }, "3000");
+      const EMAIL_REGEXP =
+        /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
+      if (
+        this.username.length > 1 &&
+        this.email &&
+        EMAIL_REGEXP.test(this.email) &&
+        this.password.length > 4 &&
+        this.password.length < 16 &&
+        this.password === this.repeatedPassword
+      ) {
+        let user = {
+          username: this.username,
+          email: this.email,
+          password: this.password,
+        };
+        this.$store.dispatch("registration", user);
+        setTimeout(() => {
+          if (this.$store.getters.regResponse.isSuccess) {
+            this.$router.push("/login");
+          }
+        }, "3000");
+      }
+      if (this.username.length <= 1) {
+        this.usernameError = "Username must contain at least 2 characters";
+      }
+      if (!this.email) {
+        this.emailError = "Enter email";
+      }
+      if (!EMAIL_REGEXP.test(this.email)) {
+        this.emailError = "Enter valid email";
+      }
+      if (!this.password) {
+        this.passwordError = "Enter password";
+      }
+      if (!(this.password.length > 4 && this.password.length < 16)) {
+        this.passwordError =
+          "Password must be at least 4 and no more than 15 characters";
+      }
+      if (this.password != this.repeatedPassword) {
+        this.repeatedPasswordError = "Passwords don't match";
+      }
     },
   },
   computed: {

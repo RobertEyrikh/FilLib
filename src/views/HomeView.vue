@@ -32,8 +32,15 @@
               <p class="grade__quantity">{{ film.ratingVoteCount }}</p>
             </div>
             <div class="buttons-container">
-              <button class="watchlist-button">
-                <img src="@/assets/icons/star.svg" class="watchlist-image" />
+              <button
+                class="watchlist-button"
+                @click.prevent="addFilmToWatchlist(film.id)"
+              >
+                <img
+                  src="@/assets/icons/star.svg"
+                  :class="{ active: isWatchlistFilm(film.id) }"
+                  class="watchlist-image"
+                />
               </button>
               <button
                 @click.prevent="openModal({ name: film.name, id: film.id })"
@@ -49,7 +56,6 @@
           </div>
         </router-link>
         <viewed-modal
-          :modalTitle="modalTitle"
           :isModalOpen="isModalOpen"
           :film="selectedFilm"
           @close="isModalOpen = false"
@@ -83,7 +89,6 @@ export default {
       category: "best",
       searchQuery: "",
       selectedFilm: {},
-      modalTitle: "Add the movie to your viewed list",
     };
   },
   props: {
@@ -109,9 +114,18 @@ export default {
     }
   },
   methods: {
+    addFilmToWatchlist(filmId) {
+      if (this.watchlistFilms.find((elem) => elem == filmId)) {
+        this.$store.dispatch("deleteFilmFromWatchlist", filmId);
+      } else {
+        this.$store.dispatch("addFilmToWatchlist", filmId);
+      }
+    },
     isViewedFilm(id) {
-      //console.log(this.user);
       return this.viewedFilms?.find((elem) => elem == id);
+    },
+    isWatchlistFilm(id) {
+      return this.watchlistFilms?.find((elem) => elem == id);
     },
     openModal(film) {
       if (this.viewedFilms) {
@@ -131,12 +145,13 @@ export default {
       });
     },
     getSearchedFilms() {
-      //this.searchQuery = this.queryString;
-      this.films = [];
-      this.category = "";
-      getFilmsByKeyword(this.searchQuery, this.page, (filmsData) => {
-        this.addFilms(filmsData);
-      });
+      if (this.queryString.length !== 0) {
+        this.films = [];
+        this.category = "";
+        getFilmsByKeyword(this.searchQuery, this.page, (filmsData) => {
+          this.addFilms(filmsData);
+        });
+      }
     },
     changeCategory(category) {
       this.searchQuery = "";
@@ -177,7 +192,7 @@ export default {
     ...mapState({
       user: (state) => state.user.user,
     }),
-    ...mapGetters(["viewedFilms"]),
+    ...mapGetters(["viewedFilms", "watchlistFilms"]),
     pageStateOptions() {
       return {
         category: this.category,

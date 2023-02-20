@@ -1,8 +1,10 @@
 <template>
   <header class="navbar">
-    <the-search @query-string="transferQueryString" />
+    <the-search v-if="isRouteHome" @query-string="transferQueryString" />
+    <div class="placeholder" v-else></div>
     <hamburger-button class="hamburger-button" @isSidebarOpen="sidebarStatus" />
     <my-button
+      class="login-button"
       @click="this.$router.push('/login')"
       v-if="isLoginInHeader && !isAuth"
       >Log in</my-button
@@ -28,10 +30,6 @@ export default {
     };
   },
   methods: {
-    issAuth() {
-      console.log(this.$store.state.user.user);
-      console.log(this.$store.state.user.token);
-    },
     logout() {
       this.$store.dispatch("logout");
       this.$router.push("/home");
@@ -54,6 +52,9 @@ export default {
       isAuth: (state) => state.user.isAuth,
       user: (state) => state.user.user,
     }),
+    isRouteHome() {
+      return this.$route.path === "/home";
+    },
   },
   created() {
     this.onLoginVisible();
@@ -69,6 +70,10 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/assets/styles/_variables.scss";
+.placeholder {
+  width: 75%;
+  position: relative;
+}
 .navbar {
   padding: $hight-margin;
   background-color: $primary-color;

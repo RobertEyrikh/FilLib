@@ -71,7 +71,7 @@ export default {
   position: sticky;
   top: 0;
   min-width: 14em;
-  height: 100vh;
+  height: 130vh;
   overflow: hidden;
   background-color: $primary-color;
   visibility: visible;
@@ -95,7 +95,7 @@ export default {
 }
 .sidebar-nav {
   position: fixed;
-  //width: 13em;
+  // width: 10em;
   background-color: $primary-color;
   height: 100%;
   font-weight: 400;
@@ -130,7 +130,6 @@ export default {
     z-index: 1;
     top: 0;
     left: -300px;
-    height: 100vh;
     width: 100%;
     max-width: 12em;
     transition: 0.2s linear;

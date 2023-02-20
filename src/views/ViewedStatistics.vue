@@ -8,7 +8,7 @@
     >
       <p class="movies-qty__year">{{ year }}:</p>
       <p class="movies-qty__description">
-        {{ Object.keys(film).length }}
+        {{ getFilmsQty(film) }}
       </p>
     </div>
   </section>
@@ -35,6 +35,14 @@ export default {
     };
   },
   methods: {
+    getFilmsQty(filmYear) {
+      let filmsQty = 0;
+      console.log(this.$store.state.user.user);
+      for (let filmMonth in filmYear) {
+        filmsQty += filmYear[filmMonth].length;
+      }
+      return filmsQty;
+    },
     sortFilmData() {
       for (let filmData of this.viewedFilmsData) {
         let year = filmData.date.substr(0, 4);
@@ -62,7 +70,7 @@ export default {
       for (let film of this.viewedFilmsData) {
         acc = acc + film.rate;
       }
-      return acc / Object.keys(this.viewedFilmsData).length;
+      return (acc / Object.keys(this.viewedFilmsData).length).toFixed(2);
     },
   },
   watch: {

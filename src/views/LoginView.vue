@@ -6,21 +6,29 @@
         <p class="login-header__description">
           Sign in to a <strong>Eyrikh Productions</strong> account
         </p>
-        <my-button-2 @click.prevent="check" class="google-button"
-          >Sign in with Google</my-button-2
-        >
+        <my-button-2 class="google-button">Sign in with Google</my-button-2>
       </header>
       <p class="line"><span class="line__or">or</span></p>
       <div class="login-fields">
         <label class="email-header">Your email</label>
-        <input v-model="email" type="text" class="email" />
+        <input
+          v-model="email"
+          @input="emailError = ''"
+          type="text"
+          class="email"
+        />
         <div class="error">
-          <label v-if="false" class="error-message">Error</label>
+          <label class="error-message">{{ emailError }}</label>
         </div>
         <label class="password-header">Your password</label>
-        <input v-model="password" type="password" class="password" />
+        <input
+          v-model="password"
+          @input="passwordError = ''"
+          type="password"
+          class="password"
+        />
         <div class="error">
-          <label v-if="false" class="error-message">Error</label>
+          <label class="error-message">{{ passwordError }}</label>
         </div>
       </div>
       <footer class="login-footer">
@@ -53,25 +61,32 @@ export default {
     return {
       email: "",
       password: "",
+      emailError: "",
+      passwordError: "",
     };
   },
   methods: {
-    check() {
-      console.log(this.$store.state.user.isAuth);
-    },
     signIn() {
-      let user = {
-        email: this.email,
-        password: this.password,
-      };
-      this.$store.dispatch("authorizationByEmail", user);
-      setTimeout(() => {
-        if (!this.message) {
-          this.$router.push("/");
-          this.email = "";
-          this.password = "";
-        }
-      }, "2000");
+      if (this.email && this.password) {
+        let user = {
+          email: this.email,
+          password: this.password,
+        };
+        this.$store.dispatch("authorizationByEmail", user);
+        setTimeout(() => {
+          if (!this.message) {
+            this.$router.push("/");
+            this.email = "";
+            this.password = "";
+          }
+        }, "2000");
+      }
+      if (!this.email) {
+        this.emailError = "Enter email";
+      }
+      if (!this.password) {
+        this.passwordError = "Enter password";
+      }
     },
   },
   computed: {

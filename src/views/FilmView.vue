@@ -11,8 +11,15 @@
         </p>
         <p class="film-specification__slogan">{{ film.slogan }}</p>
         <div class="button_container">
-          <button class="watchlist-button">
-            <img src="@/assets/icons/star.svg" class="watchlist-image" />
+          <button
+            @click.prevent="addFilmToWatchlist(film.kinopoiskId)"
+            class="watchlist-button"
+          >
+            <img
+              src="@/assets/icons/star.svg"
+              :class="{ active: isWatchlistFilm(film.kinopoiskId) }"
+              class="watchlist-image"
+            />
           </button>
           <button @click.prevent="openModal()" class="viewed-button">
             <img
@@ -107,8 +114,18 @@ export default {
     this.getFilms();
   },
   methods: {
+    addFilmToWatchlist(filmId) {
+      if (this.watchlistFilms.find((elem) => elem == filmId)) {
+        this.$store.dispatch("deleteFilmFromWatchlist", filmId);
+      } else {
+        this.$store.dispatch("addFilmToWatchlist", filmId);
+      }
+    },
     isViewedFilm(id) {
       return this.viewedFilms?.find((elem) => elem == id);
+    },
+    isWatchlistFilm(id) {
+      return this.watchlistFilms?.find((elem) => elem == id);
     },
     openModal() {
       if (this.viewedFilms) {
@@ -142,7 +159,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["viewedFilms"]),
+    ...mapGetters(["viewedFilms", "watchlistFilms"]),
   },
 };
 </script>
@@ -164,6 +181,7 @@ export default {
 }
 .film-specification {
   padding: $hight-margin;
+  z-index: 1;
   // width: 50%;
   margin-top: auto;
   margin-bottom: auto;
