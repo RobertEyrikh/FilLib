@@ -9,10 +9,11 @@
       v-if="isLoginInHeader && !isAuth"
       >Log in</my-button
     >
-    <button v-if="false" @click="issAuth">is auth</button>
-    <my-button @click="this.$router.push('/profile')" v-if="isAuth">{{
-      user.username
-    }}</my-button>
+    <my-button
+      @click="this.$router.push('/profile')"
+      v-if="isAuth && isLoginInHeader"
+      >{{ user.username }}</my-button
+    >
   </header>
 </template>
 
