@@ -181,7 +181,6 @@ export default {
 }
 .film-specification {
   padding: $hight-margin;
-  z-index: 1;
   // width: 50%;
   margin-top: auto;
   margin-bottom: auto;
@@ -191,9 +190,9 @@ export default {
   color: $active-color;
   margin-bottom: $medium-margin;
 }
-.film-specification__info {
-  width: 200%;
-}
+// .film-specification__info {
+//   width: 200%;
+// }
 .film-specification__slogan {
   margin: $little-margin 0;
   color: $text-color-active;
