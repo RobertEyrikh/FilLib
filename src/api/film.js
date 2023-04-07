@@ -1,6 +1,6 @@
 import store from "@/store";
 
-const URL = "http://localhost:5000";
+const URL = "http://fillib.eyrikhproductions.ru/api";
 
 export const addFilmToViewed = (film, cb) => {
   fetch(`${URL}/addFilmToViewed`, {
