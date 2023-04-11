@@ -13,15 +13,17 @@
         <div class="button_container">
           <button
             @click.prevent="addFilmToWatchlist(film.kinopoiskId)"
-            class="watchlist-button"
+            class="watchlist-button tooltip"
           >
+            <span class="tooltiptext">Watchlist</span>
             <img
               src="@/assets/icons/star.svg"
               :class="{ active: isWatchlistFilm(film.kinopoiskId) }"
               class="watchlist-image"
             />
           </button>
-          <button @click.prevent="openModal()" class="viewed-button">
+          <button @click.prevent="openModal()" class="viewed-button tooltip">
+            <span class="tooltiptext">Viewed</span>
             <img
               src="@/assets/icons/eye.svg"
               :class="{ active: isViewedFilm(film.kinopoiskId) }"
@@ -73,7 +75,7 @@
       <div class="information-block">
         <p class="information-block__title">Rating</p>
         <p class="information-block__description">
-          {{ film.ratingAgeLimits }}
+          {{ film.ratingAgeLimits?.replace(/[^0-9]/g, "") }} +
         </p>
       </div>
       <div class="information-block">
@@ -97,7 +99,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 import ViewedModal from "@/components/ViewedModal.vue";
 import { getCurrentFilmFromApi } from "@/api/getFilms";
 export default {
@@ -115,6 +117,10 @@ export default {
   },
   methods: {
     addFilmToWatchlist(filmId) {
+      if (!this.isAuth) {
+        this.$router.push("/login");
+        return;
+      }
       if (this.watchlistFilms.find((elem) => elem == filmId)) {
         this.$store.dispatch("deleteFilmFromWatchlist", filmId);
       } else {
@@ -130,7 +136,7 @@ export default {
     openModal() {
       if (this.viewedFilms) {
         if (this.viewedFilms.find((elem) => elem == this.id)) {
-          this.$router.push("/viewed");
+          this.$store.dispatch("deleteFilmFromViewed", this.id);
         } else {
           this.isModalOpen = true;
         }
@@ -160,6 +166,9 @@ export default {
   },
   computed: {
     ...mapGetters(["viewedFilms", "watchlistFilms"]),
+    ...mapState({
+      isAuth: (state) => state.user.isAuth,
+    }),
   },
 };
 </script>

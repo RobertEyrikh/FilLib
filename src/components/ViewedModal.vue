@@ -47,6 +47,9 @@ import { mapGetters } from "vuex";
 //import { addFilmToViewed } from "@/api/film";
 export default {
   components: { MyButton2 },
+  mounted() {
+    this.date = this.getCurrentDate;
+  },
   data() {
     return {
       rating: 10,
@@ -91,6 +94,7 @@ export default {
       const date = new Date();
       let year = date.getFullYear();
       let month = date.getMonth();
+      month += 1;
       month < 10 ? (month = "0" + month) : month;
       let day = date.getDate();
       day < 10 ? (day = "0" + day) : day;
@@ -154,6 +158,8 @@ export default {
   justify-content: space-between;
 }
 .description-input {
+  box-sizing: border-box;
+  padding: 5px 10px;
   margin-top: $little-margin;
   width: 100%;
   height: 100px;

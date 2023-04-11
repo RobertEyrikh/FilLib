@@ -1,18 +1,30 @@
 <template>
   <footer class="footer">
     <div class="social-media">
-      <div class="icon-wrapper">
-        <img class="icon icon-scale" src="@/assets/icons/linkedin.svg" />
-      </div>
-      <div class="icon-wrapper">
-        <img class="icon" src="@/assets/icons/instagram.svg" />
-      </div>
-      <div class="icon-wrapper">
-        <img class="icon icon-scale" src="@/assets/icons/twitter.svg" />
-      </div>
-      <div class="icon-wrapper">
-        <img class="icon icon-scale" src="@/assets/icons/facebook.svg" />
-      </div>
+      <a
+        class="icon-wrapper"
+        href="https://mailto:RobertEyrikh@gmail.com"
+        target="_blank"
+      >
+        <img class="icon icon-scale" src="@/assets/icons/gmail.svg" />
+      </a>
+      <a
+        class="icon-wrapper"
+        href="https://github.com/RobertEyrikh"
+        target="_blank"
+      >
+        <img class="icon icon-scale" src="@/assets/icons/github.svg" />
+      </a>
+      <a class="icon-wrapper" href="https://t.me/EyrikhR" target="_blank">
+        <img class="icon icon-scale" src="@/assets/icons/telegram.svg" />
+      </a>
+      <a
+        class="icon-wrapper"
+        href="http://eyrikhproductions.ru"
+        target="_blank"
+      >
+        <img class="icon" src="@/assets/icons/eyrikhproductions.svg" />
+      </a>
     </div>
     <p class="rights">
       &copy; Copyright 2023 Eyrikh Productions all rights reserved
@@ -58,6 +70,9 @@ export default {};
 }
 .icon-scale {
   scale: 0.7;
+}
+.icon-tg {
+  margin-right: 10px;
 }
 .rights {
   font-size: $xs-font-size;

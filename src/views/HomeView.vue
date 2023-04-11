@@ -33,9 +33,10 @@
             </div>
             <div class="buttons-container">
               <button
-                class="watchlist-button"
+                class="watchlist-button tooltip"
                 @click.prevent="addFilmToWatchlist(film.id)"
               >
+                <span class="tooltiptext">Watchlist</span>
                 <img
                   src="@/assets/icons/star.svg"
                   :class="{ active: isWatchlistFilm(film.id) }"
@@ -44,8 +45,9 @@
               </button>
               <button
                 @click.prevent="openModal({ name: film.name, id: film.id })"
-                class="viewed-button"
+                class="viewed-button tooltip"
               >
+                <span class="tooltiptext">Viewed</span>
                 <img
                   src="@/assets/icons/eye.svg"
                   :class="{ active: isViewedFilm(film.id) }"
@@ -115,6 +117,10 @@ export default {
   },
   methods: {
     addFilmToWatchlist(filmId) {
+      if (!this.isAuth) {
+        this.$router.push("/login");
+        return;
+      }
       if (this.watchlistFilms.find((elem) => elem == filmId)) {
         this.$store.dispatch("deleteFilmFromWatchlist", filmId);
       } else {
@@ -130,7 +136,7 @@ export default {
     openModal(film) {
       if (this.viewedFilms) {
         if (this.viewedFilms.find((elem) => elem == film.id)) {
-          this.$router.push("/viewed");
+          this.$store.dispatch("deleteFilmFromViewed", film.id);
         } else {
           this.isModalOpen = true;
           this.selectedFilm = film;
@@ -179,7 +185,12 @@ export default {
           year: filmData.year,
           country: filmData.countries[0]?.country,
           genres: filmData.genres[0]?.genre,
-          rating: filmData.rating !== null ? filmData.rating : "-",
+          rating:
+            filmData.rating !== null
+              ? filmData.rating.search("%") == -1
+                ? filmData.rating
+                : filmData.rating.replace(/[^0-9]/g, "") / 100
+              : "-",
           ratingVoteCount: filmData.ratingVoteCount,
           posterUrlPreview: filmData.posterUrlPreview,
           id: filmData.filmId,
@@ -191,6 +202,7 @@ export default {
   computed: {
     ...mapState({
       user: (state) => state.user.user,
+      isAuth: (state) => state.user.isAuth,
     }),
     ...mapGetters(["viewedFilms", "watchlistFilms"]),
     pageStateOptions() {
@@ -269,10 +281,12 @@ export default {
   height: 100%;
 }
 .film-description {
-  min-width: 250px;
   max-width: 60%;
 }
 .film-description__title {
+  display: inline-block;
+  max-height: 50px;
+  text-overflow: ellipsis;
   font-size: $small-font-size;
   color: $text-color-active;
   margin-bottom: $little-margin;
@@ -292,6 +306,9 @@ export default {
   margin-left: $little-margin;
 }
 @media screen and (max-width: $small) {
+  .buttons-container {
+    width: 30px;
+  }
   .image-wrapper {
     margin: 0 $little-margin 0 $little-margin;
   }
@@ -304,7 +321,7 @@ export default {
   }
   .film-description {
     font-size: $xs-font-size;
-    min-width: 200px;
+    max-width: 100px;
   }
   .watchlist-button,
   .viewed-button {

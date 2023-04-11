@@ -1,4 +1,10 @@
 <template>
+  <my-button2
+    v-if="viewedFilmsData.length == 0"
+    @click="this.$router.push('/')"
+    class="home-button"
+    >Add your first film</my-button2
+  >
   <section class="viewed" v-for="(film, year) in films" :key="film.id">
     <p class="film-year">
       {{ year }}
@@ -25,7 +31,9 @@
               <p class="film__description__rating">
                 My film score: {{ filmData.rate }}
               </p>
-              <p class="film__description__text">{{ filmData.description }}</p>
+              <p class="film__description__text">
+                {{ filmData.description }}
+              </p>
               <div class="film__buttons-container">
                 <my-button-2
                   @click.stop.prevent="changeFilmReview(filmData)"
@@ -64,30 +72,39 @@ export default {
   components: { MyButton2, ViewedModal },
   data() {
     return {
-      films: [],
+      films: {},
       isModalOpen: false,
       selectedFilm: {},
       modalTitle: "Change the movie review",
     };
   },
   methods: {
+    check() {
+      console.log(this.viewedFilmsData);
+    },
     changeFilmReview(film) {
       this.selectedFilm = film;
       this.isModalOpen = true;
     },
     deleteFilm(id) {
       this.$store.dispatch("deleteFilmFromViewed", id);
+      this.films = {};
     },
     getViewedFilmData() {
-      this.films = {};
-      for (let filmData of this.viewedFilmsData) {
+      if (this.viewedFilmsData.length === 0) {
+        return;
+      }
+      const dispalyFilms = this.films;
+      function delayedGetData(films, index, dispalyFilms) {
+        let filmData = films[index];
+
         let year = filmData.date.substr(0, 4);
         let month = monthFromNumber[filmData.date.substr(5, 2)];
-        if (!Object.keys(this.films).includes(year)) {
-          this.films[year] = {};
+        if (!Object.keys(dispalyFilms).includes(year)) {
+          dispalyFilms[year] = {};
         }
-        if (!Object.keys(this.films[year]).includes(month)) {
-          this.films[year][month] = [];
+        if (!Object.keys(dispalyFilms[year]).includes(month)) {
+          dispalyFilms[year][month] = [];
         }
         let film = {
           date: filmData.date,
@@ -102,9 +119,43 @@ export default {
             ? (film.name = filmData.nameOriginal)
             : (film.name = filmData.nameRu);
           film.poster = filmData.posterUrlPreview;
-          this.films[year][month].push(film);
+          dispalyFilms[year][month].push(film);
         });
+
+        if (index >= films.length - 1) {
+          return;
+        } else {
+          setTimeout(function () {
+            delayedGetData(films, index + 1, dispalyFilms);
+          }, 200);
+        }
       }
+      delayedGetData(this.viewedFilmsData, 0, dispalyFilms);
+      //   for (let filmData of this.viewedFilmsData) {
+      //     let year = filmData.date.substr(0, 4);
+      //     let month = monthFromNumber[filmData.date.substr(5, 2)];
+      //     if (!Object.keys(this.films).includes(year)) {
+      //       this.films[year] = {};
+      //     }
+      //     if (!Object.keys(this.films[year]).includes(month)) {
+      //       this.films[year][month] = [];
+      //     }
+      //     let film = {
+      //       date: filmData.date,
+      //       description: filmData.description,
+      //       id: filmData.filmId,
+      //       rate: filmData.rate,
+      //       poster: "",
+      //       name: "",
+      //     };
+      //     getFilmById(film.id, (filmData) => {
+      //       filmData.nameOriginal
+      //         ? (film.name = filmData.nameOriginal)
+      //         : (film.name = filmData.nameRu);
+      //       film.poster = filmData.posterUrlPreview;
+      //       this.films[year][month].push(film);
+      //     });
+      //   }
     },
   },
   computed: {
@@ -120,6 +171,9 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/assets/styles/_variables.scss";
+.home-button {
+  background-color: $active-color;
+}
 .film-year {
   position: sticky;
   top: -1px;

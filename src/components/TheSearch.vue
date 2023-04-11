@@ -6,9 +6,10 @@
       name="text"
       class="search-input"
       placeholder="Search film here!"
+      @keyup.enter.prevent="getSearchedFilms"
     />
     <button
-      @click.prevent.enter="getSearchedFilms"
+      @click.prevent="getSearchedFilms"
       type="submit"
       name="submit"
       class="submit"
@@ -51,6 +52,7 @@ export default {
   height: 20px;
   border-radius: 5px 0 0 5px;
   outline: none;
+  color: $text-color-disable;
 }
 
 .search-input:focus {

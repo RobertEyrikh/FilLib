@@ -2,15 +2,18 @@
   <form class="register-page">
     <div class="register-form">
       <header class="register-header">
-        <h1 class="register-header__title">Eyrikh Productions ID</h1>
+        <h1 @click="this.$router.push('/')" class="register-header__title">
+          Fillib ID
+        </h1>
         <p class="register-header__description">
-          Register <strong>Eyrikh Productions</strong> account
+          Registration <strong>Fillib</strong> account
         </p>
       </header>
       <div class="register-fields">
         <div class="register-fields__field">
           <label class="name-header">Your name</label>
           <input
+            @keyup.enter.prevent="registration"
             @input="usernameError = ''"
             v-model="username"
             type="text"
@@ -23,6 +26,7 @@
         <div class="register-fields__field">
           <label class="email-header">Your email</label>
           <input
+            @keyup.enter.prevent="registration"
             @input="emailError = ''"
             v-model="email"
             type="text"
@@ -35,6 +39,7 @@
         <div class="register-fields__field">
           <label class="password-header">Your password</label>
           <input
+            @keyup.enter.prevent="registration"
             @input="passwordError = ''"
             v-model="password"
             type="password"
@@ -47,6 +52,7 @@
         <div class="register-fields__field">
           <label class="confirm-password-header">Confirm your password</label>
           <input
+            @keyup.enter.prevent="registration"
             v-model="repeatedPassword"
             @input="repeatedPasswordError = ''"
             type="password"
@@ -69,11 +75,11 @@
           >
         </transition>
         <my-button-2 @click.prevent="registration" class="register-button"
-          >Register</my-button-2
+          >Registration</my-button-2
         >
         <div class="register-footer__link">
           <p class="terms-links">
-            By creating an account, you agree to the Eyrikh Productions
+            By creating an account, you agree to the Fillib
             <router-link to="/" class="link">Terms of service</router-link>
             and
             <router-link to="/" class="link">Privacy policy</router-link>
@@ -120,7 +126,7 @@ export default {
       ) {
         let user = {
           username: this.username,
-          email: this.email,
+          email: this.email.toLowerCase(),
           password: this.password,
         };
         this.$store.dispatch("registration", user);
@@ -171,7 +177,7 @@ export default {
 @import "@/assets/styles/_variables.scss";
 .register-page {
   background-color: $primary-color;
-  height: auto;
+  min-height: 100vh;
   color: $text-color-disable;
   padding-bottom: 150px;
 }
@@ -182,6 +188,7 @@ export default {
   background-color: $primary-color;
 }
 .register-header__title {
+  cursor: pointer;
   font-size: $big-font-size;
   margin-bottom: $little-margin;
 }

@@ -10,15 +10,14 @@
         Your statistics on the number of films.
       </h1>
       <p class="statistics-viewed">
-        Number of films watched: {{ user.viewedFilms.length }}
+        Number of movies watched: {{ user.viewedFilms?.length }}
       </p>
       <p class="statistics-watchlist">
-        Number of movies to watch: {{ user.viewedFilms.length }}
+        Number of movies to watch: {{ user.viewedFilms?.length }}
       </p>
     </div>
     <div class="button-container">
       <my-button-2 @click="logout" class="logout-button">Logout</my-button-2>
-      <my-button-2 class="delete-button">Delete account</my-button-2>
     </div>
   </div>
 </template>
@@ -76,8 +75,5 @@ export default {
 }
 .logout-button {
   background-color: $secondary-color;
-}
-.delete-button {
-  background-color: $error-color;
 }
 </style>

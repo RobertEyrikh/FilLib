@@ -1,4 +1,5 @@
-const URL = "http://fillib.eyrikhproductions.ru/api";
+// const URL = "http://fillib.eyrikhproductions.ru/api";
+const URL = "http://localhost:5000/api";
 
 export const getAuthCurrentUser = (token, cb) => {
   fetch(`${URL}/user`, {

@@ -2,18 +2,19 @@
   <form class="login-page">
     <div class="login-form">
       <header class="login-header">
-        <h1 class="login-header__title">Eyrikh Productions ID</h1>
+        <h1 @click="this.$router.push('/')" class="login-header__title">
+          Fillib ID
+        </h1>
         <p class="login-header__description">
-          Sign in to a <strong>Eyrikh Productions</strong> account
+          Sign in to a <strong>Fillib</strong> account
         </p>
-        <my-button-2 class="google-button">Sign in with Google</my-button-2>
       </header>
-      <p class="line"><span class="line__or">or</span></p>
       <div class="login-fields">
         <label class="email-header">Your email</label>
         <input
           v-model="email"
           @input="emailError = ''"
+          @keyup.enter.prevent="signIn"
           type="text"
           class="email"
         />
@@ -23,6 +24,7 @@
         <label class="password-header">Your password</label>
         <input
           v-model="password"
+          @keyup.enter.prevent="signIn"
           @input="passwordError = ''"
           type="password"
           class="password"
@@ -41,7 +43,7 @@
           >Sign in</my-button-2
         >
         <div class="login-footer__link">
-          <router-link to="/register" class="link">Register</router-link>
+          <router-link to="/register" class="link">Registration</router-link>
           <router-link to="/password_reset" class="link"
             >Forgot your password?</router-link
           >
@@ -69,7 +71,7 @@ export default {
     signIn() {
       if (this.email && this.password) {
         let user = {
-          email: this.email,
+          email: this.email.toLowerCase(),
           password: this.password,
         };
         this.$store.dispatch("authorizationByEmail", user);
@@ -101,7 +103,7 @@ export default {
 @import "@/assets/styles/_variables.scss";
 .login-page {
   background-color: $primary-color;
-  height: 100%;
+  min-height: 100vh;
   color: $text-color-disable;
 }
 .login-form {
@@ -112,6 +114,7 @@ export default {
   padding-bottom: 150px;
 }
 .login-header__title {
+  cursor: pointer;
   font-size: $big-font-size;
   margin-bottom: $little-margin;
 }
@@ -125,34 +128,30 @@ export default {
 .login-header__description {
   text-align: center;
 }
-.google-button {
-  margin: $hight-margin 0;
-  width: 100%;
-  background-color: $green-color;
-}
 
-.line {
-  text-align: center;
-  position: relative;
-}
-.line__or {
-  background-color: $primary-color;
-  font-size: $medium-font-size;
-  position: relative;
-  z-index: 1;
-  padding: 0px $little-margin;
-}
-.line:after {
-  content: "";
-  display: block;
-  width: 100%;
-  height: 2px;
-  background-color: $text-color-disable;
-  position: absolute;
-  top: 50%;
-  margin-top: -1px;
-  z-index: 0;
-}
+// .line {
+//   text-align: center;
+//   position: relative;
+//   font-size: $medium-font-size;
+// }
+// .line__or {
+//   background-color: $primary-color;
+//   font-size: $medium-font-size;
+//   position: relative;
+//   z-index: 1;
+//   padding: 0px $little-margin;
+// }
+// .line:after {
+//   content: "";
+//   display: block;
+//   width: 100%;
+//   height: 1px;
+//   background-color: $text-color-disable;
+//   position: absolute;
+//   top: 50%;
+//   margin-top: 20px;
+//   z-index: 0;
+// }
 
 .login-fields {
   margin: $hight-margin 0;

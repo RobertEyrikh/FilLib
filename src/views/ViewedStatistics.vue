@@ -1,34 +1,44 @@
 <template>
-  <section class="movies-qty">
-    <h1 class="movies-qty__title">Movies wathed in:</h1>
-    <div
-      v-for="(film, year) in films"
-      :key="film"
-      class="movies-qty__container"
-    >
-      <p class="movies-qty__year">{{ year }}:</p>
-      <p class="movies-qty__description">
-        {{ getFilmsQty(film) }}
-      </p>
-    </div>
-  </section>
-  <section class="movies-grade">
-    <h1 class="movies-grade__title">Average rating of watched films:</h1>
-    <div class="movies-grade__description-container">
-      <p class="movies-grade__description-title">Mine:</p>
-      <p class="movies-grade__description">{{ averageRating }}</p>
-    </div>
-    <div class="movies-grade__description-container">
-      <p class="movies-grade__description-title">Other viewers:</p>
-      <p class="movies-grade__description">7.89</p>
-    </div>
-  </section>
+  <my-button-2
+    v-if="viewedFilmsData.length == 0"
+    @click="this.$router.push('/')"
+    class="home-button"
+    >Add your first film</my-button-2
+  >
+  <div v-if="!viewedFilmsData.length == 0">
+    <section class="movies-qty">
+      <h1 class="movies-qty__title">Movies watched in:</h1>
+      <div
+        v-for="(film, year) in films"
+        :key="film"
+        class="movies-qty__container"
+      >
+        <p class="movies-qty__year">{{ year }}:</p>
+        <p class="movies-qty__description">
+          {{ getFilmsQty(film) }}
+        </p>
+      </div>
+    </section>
+    <section class="movies-grade">
+      <h1 class="movies-grade__title">Average rating of watched films:</h1>
+      <div class="movies-grade__description-container">
+        <p class="movies-grade__description-title">Mine:</p>
+        <p class="movies-grade__description">{{ averageRating }}</p>
+      </div>
+      <div class="movies-grade__description-container">
+        <p class="movies-grade__description-title">Other viewers:</p>
+        <p class="movies-grade__description">7.89</p>
+      </div>
+    </section>
+  </div>
 </template>
 
 <script>
 import monthFromNumber from "@/helpers/month";
+import MyButton2 from "@/components/UI/MyButton2.vue";
 import { mapGetters } from "vuex";
 export default {
+  components: { MyButton2 },
   data() {
     return {
       films: {},
@@ -37,7 +47,6 @@ export default {
   methods: {
     getFilmsQty(filmYear) {
       let filmsQty = 0;
-      console.log(this.$store.state.user.user);
       for (let filmMonth in filmYear) {
         filmsQty += filmYear[filmMonth].length;
       }
@@ -84,6 +93,9 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/assets/styles/_variables.scss";
+.home-button {
+  background-color: $active-color;
+}
 .movies-grade,
 .movies-qty {
   margin-bottom: $extra-hight-margin;

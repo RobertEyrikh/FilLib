@@ -1,8 +1,16 @@
 <template>
   <div class="watchlist-view">
+    <div class="dropdown">
+      <my-button-2 class="dropbtn">{{ this.filter }}</my-button-2>
+      <div class="dropdown-content">
+        <a @click="filtrate(genre)" v-for="genre in getGenres" :key="genre">{{
+          genre
+        }}</a>
+      </div>
+    </div>
     <section class="watchlist">
       <router-link
-        v-for="film in films"
+        v-for="film in filterFilms"
         :key="film.id"
         :to="`/film/${film.id}`"
         class="film-wrapper"
@@ -19,14 +27,19 @@
             <div class="film__buttons-container">
               <button
                 @click.prevent="deleteFilm(film.id)"
-                class="watchlist-button"
+                class="watchlist-button tooltip"
               >
+                <span class="tooltiptext">Watchlist</span>
                 <img
                   src="@/assets/icons/star.svg"
                   class="watchlist-image active"
                 />
               </button>
-              <button @click.prevent="openModal(film)" class="viewed-button">
+              <button
+                @click.prevent="openModal(film)"
+                class="viewed-button tooltip"
+              >
+                <span class="tooltiptext">Viewed</span>
                 <img
                   src="@/assets/icons/eye.svg"
                   class="viewed-image"
@@ -50,16 +63,22 @@
 import ViewedModal from "@/components/ViewedModal.vue";
 import { mapGetters } from "vuex";
 import { getFilmById } from "@/api/film";
+import MyButton2 from "@/components/UI/MyButton2.vue";
 export default {
-  components: { ViewedModal },
+  components: { ViewedModal, MyButton2 },
   data() {
     return {
       films: [],
       selectedFilm: {},
       isModalOpen: false,
+      filteredFilms: {},
+      filter: "all",
     };
   },
   methods: {
+    filtrate(genre) {
+      this.filter = genre;
+    },
     isViewedFilm(id) {
       return this.viewedFilms?.find((elem) => elem == id);
     },
@@ -97,6 +116,24 @@ export default {
   },
   computed: {
     ...mapGetters(["viewedFilms", "watchlistFilms"]),
+    filterFilms() {
+      if (this.filter === "all") {
+        return this.films;
+      } else {
+        const filtered = this.films.filter(
+          (film) => film.genre === this.filter
+        );
+        return filtered;
+      }
+    },
+    getGenres() {
+      let genres = new Set();
+      genres.add("all");
+      for (let film of this.films) {
+        genres.add(film.genre);
+      }
+      return genres;
+    },
   },
   watch: {
     watchlistFilms() {
@@ -108,6 +145,45 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/assets/styles/_variables.scss";
+.dropbtn {
+  background-color: $active-color;
+  color: $text-color-active;
+  font-size: 16px;
+  border: none;
+  min-width: 160px;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  margin-bottom: $hight-margin;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: $text-color-disable;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  cursor: pointer;
+}
+
+.dropdown-content a {
+  color: $text-color-active;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: $tertiary-color;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
 .watchlist-view {
   background-color: $primary-color;
   min-height: 100vh;
