@@ -37,6 +37,11 @@
       </router-link>
     </nav>
   </aside>
+  <div
+    v-if="isSidebarOpen"
+    @click="this.$emit('closeSidebar', false)"
+    class="backdrop"
+  ></div>
 </template>
 
 <script>
@@ -55,6 +60,7 @@ export default {
       type: Boolean,
     },
   },
+  emits: ["closeSidebar"],
   computed: {
     ...mapState({
       isAuth: (state) => state.user.isAuth,
@@ -66,7 +72,19 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/assets/styles/_variables.scss";
+.backdrop {
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0);
+  position: fixed;
+  display: none;
+  top: 0;
+  left: 0;
+  width: 80%;
+  height: 100%;
+  margin-left: 12em;
+}
 .sidebar {
+  z-index: 9;
   position: -webkit-sticky;
   position: sticky;
   top: 0;
@@ -125,6 +143,9 @@ export default {
   }
 }
 @media screen and (max-width: $medium) {
+  .backdrop {
+    display: block;
+  }
   .sidebar {
     position: fixed;
     z-index: 1;

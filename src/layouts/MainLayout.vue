@@ -3,12 +3,14 @@
     <the-sidebar
       :isLoginInHeader="isLoginInHeader"
       :isSidebarOpen="isSidebarOpen"
+      @closeSidebar="sidebarStatus"
     />
     <div class="header-main-footer">
       <the-header
         @isLoginInHeader="loginButtonStatus"
         @isSidebarOpen="sidebarStatus"
         @query-string="transferQueryString"
+        :isSidebarOpen="isSidebarOpen"
       />
       <main>
         <router-view :queryString="queryString" class="view" />

@@ -20,7 +20,7 @@
       </a>
       <a
         class="icon-wrapper"
-        href="http://eyrikhproductions.ru"
+        href="https://eyrikhproductions.ru"
         target="_blank"
       >
         <img class="icon" src="@/assets/icons/eyrikhproductions.svg" />

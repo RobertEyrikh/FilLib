@@ -1,8 +1,8 @@
 <template>
   <div
     class="menu-toggle"
-    @click="changeClass"
-    :class="{ isActive: this.activeClass }"
+    @click="changeClass()"
+    :class="{ isActive: this.isSidebarOpen }"
   >
     <div class="hamburger">
       <span class="hamburger-span"></span>
@@ -12,15 +12,14 @@
 
 <script>
 export default {
-  data() {
-    return {
-      activeClass: false,
-    };
+  props: {
+    isSidebarOpen: {
+      type: Boolean,
+    },
   },
   methods: {
     changeClass() {
-      this.activeClass = !this.activeClass;
-      this.$emit("isSidebarOpen", this.activeClass);
+      this.$emit("isSidebarOpen", true);
     },
   },
 };

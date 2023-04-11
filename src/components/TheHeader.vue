@@ -2,7 +2,11 @@
   <header class="navbar">
     <the-search v-if="isRouteHome" @query-string="transferQueryString" />
     <div class="placeholder" v-else></div>
-    <hamburger-button class="hamburger-button" @isSidebarOpen="sidebarStatus" />
+    <hamburger-button
+      class="hamburger-button"
+      @isSidebarOpen="sidebarStatus"
+      :isSidebarOpen="isSidebarOpen"
+    />
     <my-button
       class="login-button"
       @click="this.$router.push('/login')"
@@ -24,6 +28,11 @@ import HamburgerButton from "@/components/UI/HamburgerButton.vue";
 import { mapState } from "vuex";
 export default {
   components: { TheSearch, HamburgerButton, MyButton },
+  props: {
+    isSidebarOpen: {
+      type: Boolean,
+    },
+  },
   data() {
     return {
       isLoginInHeader: false,
